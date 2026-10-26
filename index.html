@@ -1,0 +1,3178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRE33 Slotting Terminal | Specialised Lending IRB</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 45%),
+        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 45%);
+      color: #0f172a;
+    }
+    .mono-num {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Sticky 64px Obsidian Glassmorphic Header */
+    .hyper-header {
+      background: #090d16e6;
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 64px;
+      box-shadow: 0 10px 28px -10px rgba(2, 6, 23, 0.7);
+    }
+    .hyper-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(420px circle at 10% 50%, rgba(56, 189, 248, 0.14), transparent 70%),
+        radial-gradient(420px circle at 88% 50%, rgba(129, 140, 248, 0.14), transparent 70%);
+      pointer-events: none;
+    }
+    .hyper-header::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(56, 189, 248, 0.12) 0%,
+        rgba(56, 189, 248, 0.85) 28%,
+        rgba(99, 102, 241, 0.95) 52%,
+        rgba(168, 85, 247, 0.85) 76%,
+        rgba(56, 189, 248, 0.12) 100%
+      );
+    }
+
+    /* Glowing C33 Emblem */
+    .c33-emblem {
+      background: linear-gradient(135deg, #38bdf8 0%, #4f46e5 55%, #7c3aed 100%);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+    }
+
+    /* Navigation Dock & Mobile Scroll Fade Masks (UX-01) */
+    .nav-scroll-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .nav-dock {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      scroll-behavior: smooth;
+    }
+    .nav-fade-left,
+    .nav-fade-right {
+      position: absolute;
+      top: 1px;
+      bottom: 1px;
+      width: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: opacity 0.18s ease;
+    }
+    .nav-fade-left {
+      left: 1px;
+      border-top-left-radius: 0.75rem;
+      border-bottom-left-radius: 0.75rem;
+      background: linear-gradient(90deg, rgba(9, 13, 22, 0.96) 35%, rgba(9, 13, 22, 0) 100%);
+    }
+    .nav-fade-right {
+      right: 1px;
+      border-top-right-radius: 0.75rem;
+      border-bottom-right-radius: 0.75rem;
+      background: linear-gradient(270deg, rgba(9, 13, 22, 0.96) 35%, rgba(9, 13, 22, 0) 100%);
+    }
+    .nav-pill {
+      position: relative;
+      color: #94a3b8;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-pill:hover {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .nav-pill.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.26) 0%, rgba(99, 102, 241, 0.34) 60%, rgba(139, 92, 246, 0.26) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .nav-pill.active .nav-dot {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .nav-dot {
+      opacity: 0;
+      transform: scale(0.4);
+      transition: all 0.2s ease;
+    }
+
+    @media (max-width: 520px) {
+      .nav-pill {
+        padding: 0.32rem 0.55rem;
+        font-size: 11px;
+      }
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .climate-highlight {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.14) 0%, rgba(236, 253, 245, 0.78) 100%) !important;
+      box-shadow: inset 3px 0 0 #10b981;
+    }
+
+    .quant-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+    }
+    .terminal-box {
+      background: linear-gradient(160deg, #090d16 0%, #0f172a 100%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 12px 30px -8px rgba(2, 6, 23, 0.5);
+    }
+    input[type="range"] {
+      accent-color: #0284c7;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- ULTRA-SLIM 64PX SINGLE-ROW GLASSMORPHIC HEADER + MOBILE SCROLL CUES   -->
+  <!-- ===================================================================== -->
+  <header class="hyper-header">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-2.5 sm:gap-4 relative z-10">
+
+      <!-- Left Brand Cluster -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <div class="c33-emblem w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs tracking-tighter select-none">
+          C33
+        </div>
+        <div class="flex flex-col justify-center">
+          <div class="flex items-center gap-2">
+            <span class="text-white font-extrabold text-xs sm:text-sm md:text-base tracking-tight leading-none whitespace-nowrap">
+              CRE33 Slotting Terminal
+            </span>
+          </div>
+          <div class="hidden md:flex items-center gap-1.5 mt-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+            <span class="text-[10px] font-mono text-sky-300/90 tracking-tight leading-none whitespace-nowrap">
+              Eff. 15 Dec 2019 • Climate FAQ 8 Dec 2022
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Single-Row Navigation Dock with Dynamic Fade & Chevron Cues -->
+      <div class="nav-scroll-shell">
+        <button
+          type="button"
+          id="nav-cue-left"
+          onclick="scrollNavDock(-150)"
+          aria-label="Scroll navigation left"
+          class="nav-fade-left opacity-0 pointer-events-none text-sky-300 hover:text-white"
+        >
+          <svg class="w-3.5 h-3.5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <nav id="primary-nav-dock" class="nav-dock p-1 rounded-xl flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full" aria-label="Module Navigation">
+          <button type="button" onclick="switchMainTab('overview')" id="nav-overview" class="nav-pill active border border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-sky-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            <span>Overview</span>
+            <span class="nav-dot w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+          </button>
+
+          <button type="button" onclick="switchMainTab('calculator')" id="nav-calculator" class="nav-pill border border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <span>Calculator</span>
+            <span class="nav-dot w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+          </button>
+
+          <button type="button" onclick="switchMainTab('matrix')" id="nav-matrix" class="nav-pill border border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span>Slotting Matrix</span>
+            <span class="nav-dot w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+          </button>
+
+          <button type="button" onclick="switchMainTab('scenarios')" id="nav-scenarios" class="nav-pill border border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            <span>Walkthroughs (4)</span>
+            <span class="nav-dot w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+          </button>
+
+          <button type="button" onclick="switchMainTab('simulator')" id="nav-simulator" class="nav-pill border border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span>Compliance Sim</span>
+            <span class="nav-dot w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+          </button>
+        </nav>
+
+        <button
+          type="button"
+          id="nav-cue-right"
+          onclick="scrollNavDock(150)"
+          aria-label="Scroll navigation right"
+          class="nav-fade-right opacity-0 pointer-events-none text-sky-300 hover:text-white"
+        >
+          <svg class="w-3.5 h-3.5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MICRO TELEMETRY RIBBON -->
+  <div class="bg-white/85 backdrop-blur-md border-b border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div class="flex flex-wrap items-center gap-1.5">
+        <span class="font-bold uppercase tracking-wider text-[10px] text-slate-400">Basel IRB CRE33:</span>
+        <span class="px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-semibold">PF</span>
+        <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">IPRE</span>
+        <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">OF</span>
+        <span class="px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 font-semibold">CF</span>
+        <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 font-semibold">HVCRE</span>
+        <span class="md:hidden text-[10px] font-mono text-slate-500 ml-1">Eff. 15 Dec 2019 • FAQ 8 Dec 2022</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 mono-num text-[11px] text-slate-600">
+        <span><strong class="text-slate-900">RWA:</strong> EAD × UL_RW</span>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <span><strong class="text-slate-900">EL:</strong> 8% × EL_RW × EAD</span>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <span><strong class="text-slate-900">Tier 2 Cap:</strong> 0.6% × RWA (CRE35)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE                                                        -->
+  <!-- ===================================================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- =================================================================== -->
+    <!-- MODULE 1: OVERVIEW, REGULATORY RULES & EXAMPLES (CRE33.1 – 33.12)   -->
+    <!-- =================================================================== -->
+    <section id="tab-overview" class="tab-panel space-y-6">
+      <!-- Core Regulatory Concept & Worked Example -->
+      <div class="quant-card rounded-2xl p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-7 space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-bold">
+              <span>CRE33.1 – CRE33.2</span>
+              <span>•</span>
+              <span>Supervisory Slotting Framework</span>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
+              IRB Supervisory Slotting Approach for Specialised Lending
+            </h1>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              Specialised lending funds a single-purpose asset or project. Cash flows generated by that specific asset repay the debt. Many banks lack enough historical default data to estimate Probability of Default (PD) under the corporate IRB model. Those banks must apply CRE33. Under CRE33, the bank scores deal attributes and maps its internal grade to one of five supervisory slots. Each slot assigns fixed risk weights for Unexpected Loss (UL) and Expected Loss (EL).
+            </p>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed">
+              <strong class="text-slate-900">Banking Example:</strong> A bank lends $100.00M to build a municipal water plant. The bank cannot validate an internal corporate PD model for infrastructure loans. Analysts evaluate the deal under Table CRE33.13 and assign the <strong>Strong</strong> supervisory slot.
+            </div>
+          </div>
+
+          <!-- Worked Example Terminal -->
+          <div class="lg:col-span-5 terminal-box rounded-2xl p-5 text-white space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Benchmark Calculation ($100M PF)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold">Slot: Strong (Std)</span>
+            </div>
+            <div class="space-y-2 text-xs mono-num">
+              <div class="flex justify-between">
+                <span class="text-slate-400">1. Exposure at Default (EAD):</span>
+                <span class="font-bold text-white">$100.00M</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">2. UL Risk Weight (CRE33.2):</span>
+                <span class="font-bold text-sky-300">70% → $70.00M RWA</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">3. Min UL Capital (8% × RWA):</span>
+                <span class="font-bold text-indigo-300">$5.60M</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">4. EL Risk Weight (CRE33.9):</span>
+                <span class="font-bold text-amber-300">5%</span>
+              </div>
+              <div class="flex justify-between pt-1 border-t border-slate-800">
+                <span class="text-slate-300">5. Expected Loss (8% × 5% × $100M):</span>
+                <span class="font-bold text-emerald-300">$0.40M</span>
+              </div>
+            </div>
+            <button type="button" onclick="switchMainTab('calculator')" class="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-sky-900/30 transition">
+              Open Interactive RWA & EL Calculator →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive 5 Sub-Class Selector Cards + Detail Spotlight -->
+      <div class="space-y-3.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-base font-extrabold text-slate-900">Five Specialised Lending Sub-Classes</h2>
+          <span class="text-xs text-slate-500">Select any sub-class card to inspect its ring-fencing structure and dollar example</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <button type="button" onclick="selectOverviewSubClass('PF')" data-ovsub="PF" class="ov-sub-card text-left quant-card rounded-2xl p-4 transition ring-2 ring-sky-500 bg-sky-50/40">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded bg-sky-100 text-sky-900 font-extrabold text-xs">PF</span>
+              <span class="text-[11px] font-mono text-sky-700 font-semibold">CRE33.13</span>
+            </div>
+            <div class="font-bold text-sm text-slate-900">Project Finance</div>
+            <p class="text-xs text-slate-600 mt-1">Power plants, mines, toll roads, and energy infrastructure.</p>
+          </button>
+
+          <button type="button" onclick="selectOverviewSubClass('IPRE')" data-ovsub="IPRE" class="ov-sub-card text-left quant-card rounded-2xl p-4 transition hover:border-sky-300">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-extrabold text-xs">IPRE</span>
+              <span class="text-[11px] font-mono text-slate-500">CRE33.14</span>
+            </div>
+            <div class="font-bold text-sm text-slate-900">Income-Producing RE</div>
+            <p class="text-xs text-slate-600 mt-1">Leased office towers, logistics hubs, retail, and multifamily.</p>
+          </button>
+
+          <button type="button" onclick="selectOverviewSubClass('OF')" data-ovsub="OF" class="ov-sub-card text-left quant-card rounded-2xl p-4 transition hover:border-sky-300">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-extrabold text-xs">OF</span>
+              <span class="text-[11px] font-mono text-slate-500">CRE33.15</span>
+            </div>
+            <div class="font-bold text-sm text-slate-900">Object Finance</div>
+            <p class="text-xs text-slate-600 mt-1">Ships, commercial aircraft, railcars, and satellites.</p>
+          </button>
+
+          <button type="button" onclick="selectOverviewSubClass('CF')" data-ovsub="CF" class="ov-sub-card text-left quant-card rounded-2xl p-4 transition hover:border-sky-300">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded bg-teal-100 text-teal-900 font-extrabold text-xs">CF</span>
+              <span class="text-[11px] font-mono text-slate-500">CRE33.16</span>
+            </div>
+            <div class="font-bold text-sm text-slate-900">Commodities Finance</div>
+            <p class="text-xs text-slate-600 mt-1">Crude oil, metals, and agricultural cargo trade credit.</p>
+          </button>
+
+          <button type="button" onclick="selectOverviewSubClass('HVCRE')" data-ovsub="HVCRE" class="ov-sub-card text-left quant-card rounded-2xl p-4 transition hover:border-amber-400 col-span-2 sm:col-span-1">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded bg-amber-200 text-amber-950 font-extrabold text-xs">HVCRE</span>
+              <span class="text-[11px] font-mono text-amber-800 font-semibold">CRE33.5</span>
+            </div>
+            <div class="font-bold text-sm text-slate-900">High-Volatility CRE</div>
+            <p class="text-xs text-slate-600 mt-1">Speculative commercial builds and volatile land development.</p>
+          </button>
+        </div>
+
+        <!-- Interactive Sub-Class Spotlight Panel -->
+        <div id="ov-subclass-spotlight" class="quant-card rounded-2xl p-5 border-l-4 border-l-sky-500">
+          <!-- Populated dynamically by selectOverviewSubClass() -->
+        </div>
+      </div>
+
+      <!-- Complete Regulatory Reference Schedules -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- UL Risk Weights Schedule -->
+        <div class="quant-card rounded-2xl overflow-hidden">
+          <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm">Unexpected Loss (UL) Risk Weights & Rating Anchors</h3>
+              <p class="text-[11px] text-slate-400">Formula: RWA = EAD × UL Risk Weight</p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-800 text-sky-300 border border-slate-700">CRE33.2 – 33.7</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="py-3 px-4 font-bold">Category</th>
+                  <th class="py-3 px-3 font-bold">External Rating (CRE33.3)</th>
+                  <th class="py-3 px-3 font-bold text-right">Gen. SL</th>
+                  <th class="py-3 px-3 font-bold text-right text-sky-700">Gen. Pref*</th>
+                  <th class="py-3 px-3 font-bold text-right text-amber-800">HVCRE</th>
+                  <th class="py-3 px-4 font-bold text-right text-amber-700">HVCRE Pref*</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 mono-num">
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-emerald-700">Strong</td>
+                  <td class="py-2.5 px-3 text-slate-600">BBB- or better</td>
+                  <td class="py-2.5 px-3 text-right font-bold">70%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-sky-700">50%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">95%</td>
+                  <td class="py-2.5 px-4 text-right font-bold text-amber-700">70%</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-sky-700">Good</td>
+                  <td class="py-2.5 px-3 text-slate-600">BB+ or BB</td>
+                  <td class="py-2.5 px-3 text-right font-bold">90%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-sky-700">70%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">120%</td>
+                  <td class="py-2.5 px-4 text-right font-bold text-amber-700">95%</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-amber-700">Satisfactory</td>
+                  <td class="py-2.5 px-3 text-slate-600">BB- or B+</td>
+                  <td class="py-2.5 px-3 text-right font-bold">115%</td>
+                  <td class="py-2.5 px-3 text-right text-slate-400">115%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">140%</td>
+                  <td class="py-2.5 px-4 text-right text-slate-400">140%</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-orange-700">Weak</td>
+                  <td class="py-2.5 px-3 text-slate-600">B to C</td>
+                  <td class="py-2.5 px-3 text-right font-bold">250%</td>
+                  <td class="py-2.5 px-3 text-right text-slate-400">250%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">250%</td>
+                  <td class="py-2.5 px-4 text-right text-slate-400">250%</td>
+                </tr>
+                <tr class="bg-rose-50/50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-rose-700">Default</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-500">Not applicable</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-rose-700">0%</td>
+                  <td class="py-2.5 px-3 text-right text-rose-700">0%</td>
+                  <td class="py-2.5 px-3 text-right text-rose-700">0%</td>
+                  <td class="py-2.5 px-4 text-right text-rose-700">0%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-3.5 bg-sky-50/70 border-t border-slate-200 text-xs text-slate-700 leading-relaxed">
+            <strong>*National Discretion (CRE33.4 & CRE33.7):</strong> Supervisors may permit preferential UL risk weights for <strong>Strong</strong> and <strong>Good</strong> exposures if remaining maturity is strictly less than 2.5 years, or if underwriting standards are substantially stronger than standard criteria.
+          </div>
+        </div>
+
+        <!-- EL Risk Weights Schedule -->
+        <div class="quant-card rounded-2xl overflow-hidden">
+          <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm">Expected Loss (EL) Risk Weights</h3>
+              <p class="text-[11px] text-slate-400">Formula: EL Amount = 8% × EL Risk Weight × EAD</p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-800 text-amber-300 border border-slate-700">CRE33.8 – 33.12</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="py-3 px-4 font-bold">Category</th>
+                  <th class="py-3 px-3 font-bold text-right">Gen. SL Std</th>
+                  <th class="py-3 px-3 font-bold text-right text-sky-700">Gen. SL Pref</th>
+                  <th class="py-3 px-3 font-bold text-right text-amber-800">HVCRE Std</th>
+                  <th class="py-3 px-4 font-bold text-right text-rose-700">HVCRE Pref</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 mono-num">
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-emerald-700">Strong</td>
+                  <td class="py-2.5 px-3 text-right font-bold">5%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-sky-700">0%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">5%</td>
+                  <td class="py-2.5 px-4 text-right font-bold text-rose-700 bg-amber-50">5% (CRE33.12)</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-sky-700">Good</td>
+                  <td class="py-2.5 px-3 text-right font-bold">10%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-sky-700">5%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">5%</td>
+                  <td class="py-2.5 px-4 text-right font-bold text-rose-700 bg-amber-50">5% (CRE33.12)</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-amber-700">Satisfactory</td>
+                  <td class="py-2.5 px-3 text-right font-bold">35%</td>
+                  <td class="py-2.5 px-3 text-right text-slate-400">35%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">35%</td>
+                  <td class="py-2.5 px-4 text-right text-slate-400">35%</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-orange-700">Weak</td>
+                  <td class="py-2.5 px-3 text-right font-bold">100%</td>
+                  <td class="py-2.5 px-3 text-right text-slate-400">100%</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-amber-900">100%</td>
+                  <td class="py-2.5 px-4 text-right text-slate-400">100%</td>
+                </tr>
+                <tr class="bg-rose-50/50">
+                  <td class="py-2.5 px-4 font-sans font-bold text-rose-700">Default</td>
+                  <td class="py-2.5 px-3 text-right font-bold text-rose-700">625%</td>
+                  <td class="py-2.5 px-3 text-right text-rose-700">625%</td>
+                  <td class="py-2.5 px-3 text-right text-rose-700">625%</td>
+                  <td class="py-2.5 px-4 text-right text-rose-700">625%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-3.5 bg-amber-50/70 border-t border-slate-200 text-xs text-slate-800 leading-relaxed">
+            <strong>Rule CRE33.12 Floor:</strong> Even when an HVCRE loan receives preferential UL risk weights under CRE33.7, its EL risk weight stays locked at <strong>5%</strong> for both Strong and Good. At Default, 8% × 625% equals a <strong>50%</strong> Expected Loss charge.
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparative Risk Weight Curve Chart across all 5 categories -->
+      <div class="quant-card rounded-2xl p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900">Comparative Risk Weight Curves Across All 5 Supervisory Categories</h3>
+            <p id="ov-chart-subtitle" class="text-xs text-slate-500">Comparing General SL and HVCRE Unexpected Loss (UL) risk weights across all five categories.</p>
+          </div>
+          <div class="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200 self-start">
+            <button type="button" onclick="setOverviewChartMode('UL')" id="ov-chart-ul" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm transition">
+              UL Risk Weights (%)
+            </button>
+            <button type="button" onclick="setOverviewChartMode('EL')" id="ov-chart-el" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+              EL Risk Weights (%)
+            </button>
+          </div>
+        </div>
+        <div class="relative h-64 w-full">
+          <canvas id="overviewCompChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 2: RWA & EL CALCULATOR + QA FIXES CALC-01 & CALC-02          -->
+    <!-- =================================================================== -->
+    <section id="tab-calculator" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Input Controls -->
+        <div class="lg:col-span-5 quant-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Exposure & Discretion Controls</h2>
+              <p class="text-xs text-slate-500">Test RWA, UL capital, EL charges, and CRE35 provisions.</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 font-mono text-[11px] font-bold border border-sky-200">CRE33 + CRE35</span>
+          </div>
+
+          <!-- 1. Exposure Sub-Class -->
+          <div>
+            <label for="calc-subclass" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              1. Exposure Sub-Class
+            </label>
+            <select id="calc-subclass" onchange="updateCalculator()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="PF">Project Finance (PF) — General SL</option>
+              <option value="IPRE">Income-Producing Real Estate (IPRE) — General SL</option>
+              <option value="OF">Object Finance (OF) — General SL</option>
+              <option value="CF">Commodities Finance (CF) — General SL</option>
+              <option value="HVCRE">High-Volatility Commercial Real Estate (HVCRE)</option>
+            </select>
+          </div>
+
+          <!-- 2. Supervisory Category -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-700">2. Supervisory Category</label>
+              <span id="calc-rating-anchor" class="text-[11px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Anchor: BBB- or better</span>
+            </div>
+            <div class="grid grid-cols-5 gap-1.5">
+              <button type="button" onclick="setCalcSlot('Strong')" data-slot="Strong" class="slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-slate-900 text-white border-slate-900 shadow-sm">Strong</button>
+              <button type="button" onclick="setCalcSlot('Good')" data-slot="Good" class="slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-white text-slate-700 border-slate-200 hover:bg-slate-50">Good</button>
+              <button type="button" onclick="setCalcSlot('Satisfactory')" data-slot="Satisfactory" class="slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-white text-slate-700 border-slate-200 hover:bg-slate-50">Satisf.</button>
+              <button type="button" onclick="setCalcSlot('Weak')" data-slot="Weak" class="slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-white text-slate-700 border-slate-200 hover:bg-slate-50">Weak</button>
+              <button type="button" onclick="setCalcSlot('Default')" data-slot="Default" class="slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-white text-slate-700 border-slate-200 hover:bg-slate-50">Default</button>
+            </div>
+          </div>
+
+          <!-- 3. Exposure at Default (EAD) with QA Fix CALC-02 -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="calc-ead-input" class="text-xs font-bold uppercase tracking-wider text-slate-700">3. Exposure at Default (EAD $M)</label>
+              <span id="calc-ead-badge" class="text-sm font-extrabold text-sky-700 mono-num">$100.00M</span>
+            </div>
+            <input type="range" id="calc-ead-range" min="0" max="500" step="5" value="100" oninput="handleEADSlider()" class="w-full cursor-pointer" />
+            <div class="flex items-center justify-between gap-2 mt-1.5">
+              <span class="text-[11px] text-slate-500">Type exact EAD ($ Millions):</span>
+              <input
+                type="text"
+                inputmode="decimal"
+                id="calc-ead-input"
+                value="100.00"
+                oninput="handleCalculatorTextInput()"
+                onblur="normalizeDecimalField('calc-ead-input', 'calc-ead-neg-warn')"
+                class="w-32 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold mono-num text-right focus:outline-none focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+            <div id="calc-ead-neg-warn" class="hidden mt-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-semibold">
+              Negative values are clamped to $0.00M
+            </div>
+          </div>
+
+          <!-- 4. Eligible Provisions ($M) with QA Fix CALC-02 -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="calc-prov-input" class="text-xs font-bold uppercase tracking-wider text-slate-700">4. Eligible Provisions ($M)</label>
+              <span id="calc-prov-badge" class="text-xs font-bold text-slate-700 mono-num">$0.50M</span>
+            </div>
+            <input
+              type="text"
+              inputmode="decimal"
+              id="calc-prov-input"
+              value="0.50"
+              oninput="handleCalculatorTextInput()"
+              onblur="normalizeDecimalField('calc-prov-input', 'calc-prov-neg-warn')"
+              class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold mono-num focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <div id="calc-prov-neg-warn" class="hidden mt-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-semibold">
+              Negative values are clamped to $0.00M
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">General and specific provisions compared against Expected Loss under CRE35.</p>
+          </div>
+
+          <!-- 5. Remaining Maturity (0.1 step) & National Discretion Toggles -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <label for="calc-maturity" class="text-xs font-bold text-slate-800">5. Remaining Maturity (0.5 – 15.0 yrs)</label>
+              <span id="calc-mat-badge" class="text-xs font-bold mono-num px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">2.0 yrs (&lt; 2.5y)</span>
+            </div>
+            <input type="range" id="calc-maturity" min="0.5" max="15.0" step="0.1" value="2.0" oninput="updateCalculator()" class="w-full cursor-pointer" />
+
+            <div class="space-y-2 pt-1 border-t border-slate-200/80 text-xs">
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="font-semibold text-slate-800">National Discretion Enabled</span>
+                <input type="checkbox" id="calc-nat-disc" checked onchange="updateCalculator()" class="h-4 w-4 rounded text-sky-600 focus:ring-sky-500" />
+              </label>
+              <label class="flex items-center justify-between cursor-pointer">
+                <span class="font-semibold text-slate-800">Substantially Stronger Underwriting</span>
+                <input type="checkbox" id="calc-strong-uw" onchange="updateCalculator()" class="h-4 w-4 rounded text-sky-600 focus:ring-sky-500" />
+              </label>
+            </div>
+
+            <div id="calc-pref-status" class="p-2.5 rounded-lg text-[11px] font-medium bg-sky-100/80 text-sky-900 border border-sky-200 leading-snug">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Live Outputs, QA Fix CALC-01 Banner, Formula Trace & Chart -->
+        <div class="lg:col-span-7 space-y-5">
+          <!-- 4 Primary KPI Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+            <div class="quant-card p-4 rounded-2xl border-t-2 border-t-slate-900">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Risk-Weighted Assets</span>
+              <div id="res-rwa" class="text-xl font-extrabold text-slate-900 mono-num mt-1">$50.00M</div>
+              <span id="res-ul-rw" class="inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 mono-num">UL RW: 50%</span>
+            </div>
+
+            <div class="quant-card p-4 rounded-2xl border-t-2 border-t-sky-500">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Min UL Capital (8%)</span>
+              <div id="res-ul-cap" class="text-xl font-extrabold text-sky-700 mono-num mt-1">$4.00M</div>
+              <span class="inline-block mt-1.5 text-[11px] text-slate-500 mono-num">8% × RWA</span>
+            </div>
+
+            <div class="quant-card p-4 rounded-2xl border-t-2 border-t-amber-500">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Expected Loss (EL)</span>
+              <div id="res-el-amt" class="text-xl font-extrabold text-amber-700 mono-num mt-1">$0.00M</div>
+              <span id="res-el-rw" class="inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 mono-num">EL RW: 0%</span>
+            </div>
+
+            <div id="cre35-kpi-card" class="quant-card p-4 rounded-2xl border-t-2 border-t-emerald-500 relative">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">CRE35 Provision</span>
+                <span id="cre35-default-tooltip" class="hidden cursor-help px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-mono text-[10px] font-bold" title="CRE33.2 / CRE35 Note: Defaulted exposures carry a 0% UL risk weight and generate $0.00M in credit RWA. Consequently, the 0.6% RWA cap for Tier 2 excess provisions equals $0.00M, so excess provisions above Expected Loss cannot be added to Tier 2 capital.">0% Cap Info</span>
+              </div>
+              <div id="res-prov-diff" class="text-xl font-extrabold text-emerald-700 mono-num mt-1">+$0.30M</div>
+              <span id="res-prov-tag" class="inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800">Tier 2 Eligible</span>
+            </div>
+          </div>
+
+          <!-- QA FIX CALC-01: Dedicated Default Grade Tier 2 Excess Callout Banner -->
+          <div id="calc-default-excess-banner" class="hidden rounded-2xl p-4 bg-indigo-950 text-indigo-100 border border-indigo-400/50 shadow-md">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-sky-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-xs leading-relaxed font-medium">
+                <strong class="text-sky-300">CRE33.2 / CRE35 Note:</strong> Defaulted exposures carry a 0% UL risk weight and generate $0.00M in credit RWA. Consequently, the 0.6% RWA cap for Tier 2 excess provisions equals $0.00M, so excess provisions above Expected Loss cannot be added to Tier 2 capital.
+              </p>
+            </div>
+          </div>
+
+          <!-- Live Step-by-Step Terminal Formula Trace -->
+          <div class="terminal-box rounded-2xl p-5 text-white space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400">Step-by-Step Regulatory Formula Breakdown</h3>
+              <span id="trace-rule-ref" class="text-[11px] font-mono text-slate-400">CRE33.2 – CRE33.10</span>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 gap-1">
+                <span class="text-slate-300"><strong>1. Credit RWA:</strong> Multiply EAD by the UL risk weight.</span>
+                <span id="step-1-math" class="mono-num font-bold text-white">$100.00M × 50% = $50.00M</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 gap-1">
+                <span class="text-slate-300"><strong>2. Minimum UL Capital:</strong> Multiply RWA by 8%.</span>
+                <span id="step-2-math" class="mono-num font-bold text-sky-300">8% × $50.00M = $4.00M</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 gap-1">
+                <span class="text-slate-300"><strong>3. Expected Loss (EL):</strong> Multiply 8% by EL risk weight and EAD.</span>
+                <span id="step-3-math" class="mono-num font-bold text-amber-300">8% × 0% × $100.00M = $0.00M</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 gap-1">
+                <span class="text-slate-300"><strong>4. CRE35 Provision Check:</strong> Compare provisions to EL and 0.6% RWA cap.</span>
+                <span id="step-4-math" class="mono-num font-bold text-emerald-300">Excess $0.50M | Cap $0.30M</span>
+              </div>
+            </div>
+            <p id="step-explanation" class="text-xs text-slate-300 leading-relaxed pt-1">
+              <!-- Populated dynamically -->
+            </p>
+          </div>
+
+          <!-- 5-Grade Comparison Bar Chart -->
+          <div class="quant-card rounded-2xl p-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div>
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">5-Category RWA & Expected Loss Sensitivity ($M)</h4>
+                <p class="text-xs text-slate-500">Shows how this exact deal behaves across Strong, Good, Satisfactory, Weak, and Default.</p>
+              </div>
+              <span class="text-[11px] font-mono text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Active Category Highlighted</span>
+            </div>
+            <div class="relative h-60 w-full">
+              <canvas id="dealFiveGradesChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 3: SLOTTING CRITERIA MATRIX EXPLORER (CRE33.13 – 33.16)      -->
+    <!-- =================================================================== -->
+    <section id="tab-matrix" class="tab-panel hidden space-y-5">
+      <div class="quant-card rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">Supervisory Slotting Criteria Matrix Explorer</h2>
+            <p class="text-xs text-slate-600 mt-0.5">
+              Inspect every Basel slotting factor across CRE33.13 through CRE33.16. Each row includes a concrete credit file example.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="selectMatrixClass('PF')" data-mclass="PF" class="mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition">
+              Project Finance (CRE33.13)
+            </button>
+            <button type="button" onclick="selectMatrixClass('IPRE')" data-mclass="IPRE" class="mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              IPRE & HVCRE (CRE33.14)
+            </button>
+            <button type="button" onclick="selectMatrixClass('OF')" data-mclass="OF" class="mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              Object Finance (CRE33.15)
+            </button>
+            <button type="button" onclick="selectMatrixClass('CF')" data-mclass="CF" class="mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              Commodities Finance (CRE33.16)
+            </button>
+          </div>
+        </div>
+
+        <!-- Search, Grade Column Spotlight & Climate Risk Lens -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-3 border-t border-slate-100">
+          <div class="md:col-span-5 relative">
+            <input
+              type="text"
+              id="matrix-search"
+              oninput="renderMatrixTable()"
+              placeholder="Search factors (e.g., turnkey, DSCR, lien, balloon, hedging)..."
+              class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+          <div class="md:col-span-3">
+            <select id="matrix-grade-focus" onchange="renderMatrixTable()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-semibold">
+              <option value="ALL">Spotlight: All Columns</option>
+              <option value="Strong">Spotlight Column: Strong</option>
+              <option value="Good">Spotlight Column: Good</option>
+              <option value="Satisfactory">Spotlight Column: Satisfactory</option>
+              <option value="Weak">Spotlight Column: Weak</option>
+            </select>
+          </div>
+          <div class="md:col-span-4">
+            <label class="w-full flex items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-emerald-950 text-emerald-100 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] cursor-pointer">
+              <span class="text-xs font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Climate Risk Lens (Dec 2022 FAQ1)
+              </span>
+              <input type="checkbox" id="climate-toggle" onchange="toggleClimateHighlight()" class="h-4 w-4 rounded text-emerald-500 focus:ring-emerald-500" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Climate FAQ1 Guidance Banner -->
+        <div id="climate-panel" class="hidden rounded-xl bg-emerald-950 text-emerald-50 p-4 border border-emerald-600/60 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              CRE33 FAQ1 • Climate-Related Financial Risks (Added 8 Dec 2022)
+            </span>
+            <span class="text-xs text-emerald-300">Green-highlighted rows require climate assessment</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs leading-relaxed">
+            <div class="p-3 rounded-lg bg-emerald-900/60 border border-emerald-800">
+              <strong class="text-white block mb-1">1. Transition Risk Impact</strong>
+              Carbon taxes and emissions laws reduce demand for high-carbon assets. Analysts assess this risk under <strong>Market Conditions</strong>, <strong>Stress Analysis</strong>, and <strong>Legal/Regulatory Stability</strong>.
+            </div>
+            <div class="p-3 rounded-lg bg-emerald-900/60 border border-emerald-800">
+              <strong class="text-white block mb-1">2. Physical Risk Impact</strong>
+              Storms, floods, and heatwaves damage physical assets and disrupt supply chains. Analysts assess this risk under <strong>Force Majeure</strong>, <strong>Stress Analysis</strong>, and <strong>Asset Characteristics</strong>.
+            </div>
+            <div class="p-3 rounded-lg bg-emerald-900/60 border border-emerald-800">
+              <strong class="text-white block mb-1">3. Adaptation & Insurance Mitigants</strong>
+              Banks check whether engineered climate defences or catastrophe insurance policies offset the hazard before assigning a lower category.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matrix Table -->
+      <div class="quant-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-3 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2">
+          <h3 id="matrix-table-title" class="font-bold text-sm">CRE33.13 — Project Finance Slotting Criteria</h3>
+          <span id="matrix-row-count" class="text-xs text-sky-300 mono-num">Showing 29 sub-factors</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead id="matrix-thead" class="bg-slate-100 text-slate-800 border-b border-slate-200"></thead>
+            <tbody id="matrix-tbody" class="divide-y divide-slate-200 align-top"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 4: 4 REAL-WORLD BANKING SCENARIO WALKTHROUGHS                -->
+    <!-- =================================================================== -->
+    <section id="tab-scenarios" class="tab-panel hidden space-y-5">
+      <div class="quant-card rounded-2xl p-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">Expanded Deep Dive: 4 Real-World Banking Walkthroughs</h2>
+            <p class="text-xs text-slate-600 mt-0.5">
+              Compare Base Case deals against Stress / What-If restructurings to see slotting factor shifts, RWA deltas, and EL charges.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="selectScenario(0)" data-scen="0" class="scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition">
+              1. $250M Wind Farm PF
+            </button>
+            <button type="button" onclick="selectScenario(1)" data-scen="1" class="scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              2. $120M IPRE vs HVCRE
+            </button>
+            <button type="button" onclick="selectScenario(2)" data-scen="2" class="scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              3. $85M Freighter OF
+            </button>
+            <button type="button" onclick="selectScenario(3)" data-scen="3" class="scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              4. $60M Copper Cathode CF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div id="scenario-left" class="lg:col-span-7 space-y-5"></div>
+        <div class="lg:col-span-5 space-y-5">
+          <div id="scenario-right-kpis"></div>
+          <div class="quant-card rounded-2xl p-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-2">Base Case vs. Stress Scenario ($M)</h4>
+            <div class="relative h-52 w-full">
+              <canvas id="scenarioShiftChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 5: DATA QUALITY & COMPLIANCE SIMULATOR                       -->
+    <!-- =================================================================== -->
+    <section id="tab-simulator" class="tab-panel hidden space-y-5">
+      <div class="quant-card rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-900">Data Quality & Supervisory Compliance Simulator</h2>
+          <p class="text-xs text-slate-600 mt-0.5">
+            Score the six slotting pillars and toggle eight audit flags to calculate the Data Quality Score, Supervisory Approved Slot, and RWA add-on.
+          </p>
+        </div>
+        <button type="button" onclick="resetSimulatorClean()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition shrink-0">
+          Restore Clean Audit File
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Audit Workbench -->
+        <div class="lg:col-span-7 space-y-5">
+          <!-- 1. Exposure Parameters -->
+          <div class="quant-card rounded-2xl p-5 space-y-4">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2">
+              1. Credit File Parameters
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div>
+                <label for="sim-subclass" class="block text-xs font-semibold text-slate-700 mb-1">Exposure Class</label>
+                <select id="sim-subclass" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                  <option value="PF">Project Finance (PF)</option>
+                  <option value="IPRE">IPRE (Commercial RE)</option>
+                  <option value="HVCRE">HVCRE (Volatile RE)</option>
+                  <option value="OF">Object Finance (OF)</option>
+                  <option value="CF">Commodities Finance (CF)</option>
+                </select>
+              </div>
+              <div>
+                <label for="sim-ead" class="block text-xs font-semibold text-slate-700 mb-1">EAD ($ Millions)</label>
+                <input
+                  type="text"
+                  inputmode="decimal"
+                  id="sim-ead"
+                  value="150.00"
+                  oninput="runComplianceSimulator()"
+                  onblur="normalizeDecimalField('sim-ead', null)"
+                  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold mono-num"
+                />
+              </div>
+              <div>
+                <label for="sim-claim-pref" class="block text-xs font-semibold text-slate-700 mb-1">Preferential RW Claim</label>
+                <select id="sim-claim-pref" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                  <option value="yes">Claims Preferential RW</option>
+                  <option value="no">Standard RW Only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Six Pillar Slotting Selectors -->
+          <div class="quant-card rounded-2xl p-5 space-y-3">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2">
+              2. Six Pillar Slotting Grades (Analyst Proposed)
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="p-fin" class="block text-xs font-medium text-slate-700 mb-1">1. Financial Strength</label>
+                <select id="p-fin" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2">Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+              <div>
+                <label for="p-pol" class="block text-xs font-medium text-slate-700 mb-1">2. Political & Legal</label>
+                <select id="p-pol" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2">Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+              <div>
+                <label for="p-asset" class="block text-xs font-medium text-slate-700 mb-1">3. Transaction / Asset</label>
+                <select id="p-asset" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2" selected>Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+              <div>
+                <label for="p-ops" class="block text-xs font-medium text-slate-700 mb-1">4. Operating / Construction</label>
+                <select id="p-ops" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2">Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+              <div>
+                <label for="p-offtake" class="block text-xs font-medium text-slate-700 mb-1">5. Off-take / Cash-Flow</label>
+                <select id="p-offtake" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2">Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+              <div>
+                <label for="p-sec" class="block text-xs font-medium text-slate-700 mb-1">6. Sponsor & Security</label>
+                <select id="p-sec" onchange="runComplianceSimulator()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold">
+                  <option value="1">Strong</option>
+                  <option value="2">Good</option>
+                  <option value="3">Satisfactory</option>
+                  <option value="4">Weak</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Eight Interactive Audit, Documentation & Climate Risk Checkboxes -->
+          <div class="quant-card rounded-2xl p-5 space-y-3">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2">
+              3. Eight Audit, Documentation & Climate Risk Flags
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-lien" onchange="runComplianceSimulator()" checked class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Unperfected First Lien / Missing Opinion</strong>
+                  First-ranking security interest lacks legal perfection.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-stale" onchange="runComplianceSimulator()" checked class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Stale Appraisal or Model (&gt;12 Months)</strong>
+                  Valuation or cash-flow model is older than 12 months.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-stress" onchange="runComplianceSimulator()" class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Missing Downside Stress Analysis</strong>
+                  File lacks interest-rate and revenue downturn stress runs.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-climate" onchange="runComplianceSimulator()" checked class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Unmitigated Physical Climate Hazard (FAQ1)</strong>
+                  Flood or storm hazard lacks adaptation or catastrophe cover.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-tenor" onchange="runComplianceSimulator()" class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Uncapped Balloon / Tenor &gt; Asset Life</strong>
+                  Loan maturity exceeds economic asset life or lacks amortisation.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-rent" onchange="runComplianceSimulator()" class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Incomplete Rent Roll / Missing Assignment</strong>
+                  Lender lacks current tenant records to collect rent directly.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-offtaker" onchange="runComplianceSimulator()" class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Unverified Off-taker Audited Financials</strong>
+                  Key buyer, lessee, or trader lacks audited financial statements.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="flag-mat" onchange="runComplianceSimulator()" class="mt-0.5 h-4 w-4 rounded text-rose-600" />
+                <span>
+                  <strong class="text-slate-900 block">Unverified Maturity &lt; 2.5 Years</strong>
+                  Borrower extension option pushes effective tenor past 2.5 years.
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Governance Gauge, Supervisory Approved Slot & Remediation -->
+        <div class="lg:col-span-5 space-y-5">
+          <div class="terminal-box rounded-2xl p-5 text-white space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Audit & Governance Output</span>
+              <span id="sim-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-400/30">
+                Override Active
+              </span>
+            </div>
+
+            <!-- Visual Gauge -->
+            <div class="flex items-center gap-4 p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" stroke="#1e293b" stroke-width="6" fill="none" />
+                  <circle id="sim-gauge-ring" cx="32" cy="32" r="26" stroke="#f43f5e" stroke-width="6" stroke-dasharray="163.36" stroke-dashoffset="94.75" stroke-linecap="round" fill="none" class="transition-all duration-300" />
+                </svg>
+                <span id="sim-dq-score" class="absolute text-xs font-extrabold mono-num text-white">42%</span>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs font-bold text-white">Data Quality & Governance Score</div>
+                <p id="sim-dq-caption" class="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                  Critical security or documentation defects trigger a mandatory supervisory slot override.
+                </p>
+              </div>
+            </div>
+
+            <!-- Analyst Proposed vs Supervisory Approved -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+                <span class="text-[11px] text-slate-400 block">Analyst Proposed Slot</span>
+                <div id="sim-desk-slot" class="text-sm font-extrabold text-white mt-0.5">Strong (Pref)</div>
+                <span id="sim-desk-rw" class="text-[11px] mono-num text-sky-300">UL: 50% | EL: 0%</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/90 border border-rose-500/50">
+                <span class="text-[11px] text-slate-400 block">Supervisory Approved Slot</span>
+                <div id="sim-audit-slot" class="text-sm font-extrabold text-rose-300 mt-0.5">Weak (Std)</div>
+                <span id="sim-audit-rw" class="text-[11px] mono-num text-rose-300">UL: 250% | EL: 100%</span>
+              </div>
+            </div>
+
+            <!-- Compliance Capital Add-On -->
+            <div class="p-3.5 rounded-xl bg-sky-950/50 border border-sky-500/30 space-y-1.5 text-xs">
+              <div class="font-bold text-sky-300 uppercase tracking-wider text-[11px]">Compliance Capital Add-On Penalty</div>
+              <div class="flex justify-between">
+                <span class="text-slate-300">Supervisory RWA Add-On:</span>
+                <span id="sim-rwa-penalty" class="mono-num font-bold text-white">+$300.00M</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-300">UL Capital Penalty (8% × ΔRWA):</span>
+                <span id="sim-cap-penalty" class="mono-num font-bold text-rose-300">+$24.00M</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-300">Expected Loss Charge Add-On:</span>
+                <span id="sim-el-penalty" class="mono-num font-bold text-amber-300">+$12.00M</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="quant-card rounded-2xl p-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-2">Analyst Proposed vs. Supervisory Approved ($M)</h4>
+            <div class="relative h-44 w-full">
+              <canvas id="simulatorChart"></canvas>
+            </div>
+          </div>
+
+          <div class="quant-card rounded-2xl p-5 space-y-2.5">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Actionable Remediation Checklist</h4>
+            <ul id="sim-remediation-list" class="space-y-2 text-xs"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- EXCLUSIVE FOOTER SECTION                                              -->
+  <!-- ===================================================================== -->
+  <footer class="bg-slate-950 text-slate-400 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div class="text-slate-400 text-center sm:text-left">
+        Regulatory Educational & Risk Analytics Tool • Modelled on BCBS Basel Framework CRE33 & CRE35
+      </div>
+      <div class="text-slate-200 font-medium text-center sm:text-right">
+        Prompt Developer: Sudharsanan k, Risk Analyst | <a href="mailto:casudharsanan.k@gmail.com" class="text-sky-400 hover:text-sky-300 underline">casudharsanan.k@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION LOGIC                                                     -->
+  <!-- ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. REGULATORY PARAMETERS (CRE33.2 – CRE33.12)
+    // -----------------------------------------------------------------------
+    const SLOTS_ORDER = ['Strong', 'Good', 'Satisfactory', 'Weak', 'Default'];
+
+    const RATING_ANCHORS = {
+      Strong: 'BBB- or better',
+      Good: 'BB+ or BB',
+      Satisfactory: 'BB- or B+',
+      Weak: 'B to C',
+      Default: 'Not applicable'
+    };
+
+    const UL_WEIGHTS = {
+      GENERAL: {
+        std:  { Strong: 0.70, Good: 0.90, Satisfactory: 1.15, Weak: 2.50, Default: 0.00 },
+        pref: { Strong: 0.50, Good: 0.70, Satisfactory: 1.15, Weak: 2.50, Default: 0.00 }
+      },
+      HVCRE: {
+        std:  { Strong: 0.95, Good: 1.20, Satisfactory: 1.40, Weak: 2.50, Default: 0.00 },
+        pref: { Strong: 0.70, Good: 0.95, Satisfactory: 1.40, Weak: 2.50, Default: 0.00 }
+      }
+    };
+
+    const EL_WEIGHTS = {
+      GENERAL: {
+        std:  { Strong: 0.05, Good: 0.10, Satisfactory: 0.35, Weak: 1.00, Default: 6.25 },
+        pref: { Strong: 0.00, Good: 0.05, Satisfactory: 0.35, Weak: 1.00, Default: 6.25 }
+      },
+      HVCRE: {
+        std:  { Strong: 0.05, Good: 0.05, Satisfactory: 0.35, Weak: 1.00, Default: 6.25 },
+        pref: { Strong: 0.05, Good: 0.05, Satisfactory: 0.35, Weak: 1.00, Default: 6.25 }
+      }
+    };
+
+    // Sub-Class Interactive Overview Data
+    const SUBCLASS_SPOTLIGHT = {
+      PF: {
+        code: 'PF',
+        name: 'Project Finance',
+        ref: 'CRE33.2 & Table CRE33.13',
+        definition: 'Project finance funds large capital installations such as power plants, chemical processing facilities, mines, and transport infrastructure.',
+        ringFence: 'The borrower is a dedicated Special Purpose Entity (SPE). Lenders rely primarily on revenues generated by the single project for both collateral value and debt service.',
+        example: 'A bank lends $250.00M to an offshore wind SPE holding an 18-year utility power purchase contract. At a Strong standard grade (70% UL RW, 5% EL RW), the loan generates $175.00M in RWA and $1.00M in Expected Loss.',
+        matrixKey: 'PF'
+      },
+      IPRE: {
+        code: 'IPRE',
+        name: 'Income-Producing Real Estate',
+        ref: 'CRE33.2 & Table CRE33.14',
+        definition: 'Income-producing real estate funds commercial office buildings, retail centres, multifamily apartments, and industrial warehouses.',
+        ringFence: 'Repayment and recovery depend directly on lease rentals or sales proceeds generated by the mortgaged property rather than broader corporate cash flows.',
+        example: 'A bank lends $120.00M against a stabilised CBD office tower with staggered 10-year leases. At a Strong standard grade (70% UL RW, 5% EL RW), RWA equals $84.00M and Expected Loss equals $0.48M.',
+        matrixKey: 'IPRE'
+      },
+      OF: {
+        code: 'OF',
+        name: 'Object Finance',
+        ref: 'CRE33.2 & Table CRE33.15',
+        definition: 'Object finance funds the acquisition of physical movable equipment including vessels, commercial aircraft, satellites, and railcars.',
+        ringFence: 'The lender takes a perfected first mortgage over the physical asset. Ongoing lease or charter rentals pledged by third-party operators repay the loan.',
+        example: 'A bank provides $85.00M for a widebody freighter aircraft on a 10-year lease. At a Good standard grade (90% UL RW, 10% EL RW), RWA equals $76.50M and Expected Loss equals $0.68M.',
+        matrixKey: 'OF'
+      },
+      CF: {
+        code: 'CF',
+        name: 'Commodities Finance',
+        ref: 'CRE33.2 & Table CRE33.16',
+        definition: 'Commodities finance provides structured short-term lending to fund reserves, inventories, or receivables of exchange-traded commodities.',
+        ringFence: 'The credit is self-liquidating. Proceeds from the sale of the hedged commodity cargo flow into an offshore collection account to retire the advance.',
+        example: 'A bank advances $60.00M for a 1.5-year hedged copper cathode pre-export deal. Under Strong preferential rules (50% UL RW, 0% EL RW), RWA drops to $30.00M and Expected Loss equals $0.00M.',
+        matrixKey: 'CF'
+      },
+      HVCRE: {
+        code: 'HVCRE',
+        name: 'High-Volatility Commercial Real Estate',
+        ref: 'CRE33.5 – CRE33.7, CRE33.11 – CRE33.12 & Table CRE33.14',
+        definition: 'High-volatility commercial real estate covers commercial property loans that show higher loss-rate volatility across economic cycles, including speculative construction and land development.',
+        ringFence: 'Banks score HVCRE deals with the IPRE slotting table (CRE33.14), but apply steeper UL risk weights (95% Strong, 120% Good, 140% Satisfactory) and a hard 5% EL floor under CRE33.12.',
+        example: 'A $120.00M unleased speculative office construction loan slots at Satisfactory. Under HVCRE rules (140% UL RW, 35% EL RW), RWA surges to $168.00M and Expected Loss reaches $3.36M.',
+        matrixKey: 'IPRE'
+      }
+    };
+
+    // Active Application State
+    let activeOverviewSubClass = 'PF';
+    let overviewChartMode = 'UL';
+    let calcSlot = 'Strong';
+    let activeMatrixClass = 'PF';
+    let activeScenarioIdx = 0;
+    let activeScenarioCase = 'base';
+
+    let overviewChartInstance = null;
+    let dealGradesChartInstance = null;
+    let scenarioChartInstance = null;
+    let simChartInstance = null;
+
+    function fmtM(val) {
+      const safe = Number.isFinite(val) ? val : 0;
+      const sign = safe < 0 ? '-' : '';
+      return sign + '$' + Math.abs(safe).toFixed(2) + 'M';
+    }
+
+    // QA FIX CALC-02: Safe non-snapping numeric parser
+    function parseSafeNonNegative(rawStr) {
+      const trimmed = String(rawStr || '').trim();
+      if (trimmed === '' || trimmed === '.' || trimmed === '-' || trimmed === '-.') {
+        return { value: 0, isNegative: trimmed.startsWith('-') && trimmed.length > 0 && trimmed !== '-' ? true : trimmed === '-' };
+      }
+      const parsed = Number(trimmed.replace(/,/g, ''));
+      if (!Number.isFinite(parsed)) {
+        return { value: 0, isNegative: false };
+      }
+      if (parsed < 0) {
+        return { value: 0, isNegative: true };
+      }
+      return { value: Math.min(parsed, 100000), isNegative: false };
+    }
+
+    function normalizeDecimalField(inputId, warnBannerId) {
+      const inputEl = document.getElementById(inputId);
+      if (!inputEl) return;
+      const check = parseSafeNonNegative(inputEl.value);
+      inputEl.value = check.value.toFixed(2);
+      if (warnBannerId) {
+        document.getElementById(warnBannerId).classList.add('hidden');
+      }
+      if (inputId.startsWith('calc-')) {
+        updateCalculator();
+      } else {
+        runComplianceSimulator();
+      }
+    }
+
+    // Core CRE33 & CRE35 Calculation Engine
+    function computeCRE33(subclass, slot, ead, prefActive, provisions) {
+      const isHVCRE = (subclass === 'HVCRE');
+      const group = isHVCRE ? 'HVCRE' : 'GENERAL';
+      const slotCanPref = (slot === 'Strong' || slot === 'Good');
+      const usePref = Boolean(prefActive && slotCanPref);
+      const regime = usePref ? 'pref' : 'std';
+
+      const ulRW = UL_WEIGHTS[group][regime][slot];
+      const elRW = EL_WEIGHTS[group][regime][slot];
+
+      const rwa = ead * ulRW;
+      const ulCap = 0.08 * rwa;
+      const elAmt = 0.08 * elRW * ead;
+      const tier2Cap = 0.006 * rwa;
+      const netProv = provisions - elAmt;
+
+      return {
+        isHVCRE,
+        slotCanPref,
+        usePref,
+        ulRW,
+        elRW,
+        rwa,
+        ulCap,
+        elAmt,
+        tier2Cap,
+        netProv
+      };
+    }
+
+    // -----------------------------------------------------------------------
+    // 2. HEADER MOBILE SCROLL CUES (QA FIX UX-01) & NAVIGATION
+    // -----------------------------------------------------------------------
+    function updateNavScrollCues() {
+      const dock = document.getElementById('primary-nav-dock');
+      const leftCue = document.getElementById('nav-cue-left');
+      const rightCue = document.getElementById('nav-cue-right');
+      if (!dock || !leftCue || !rightCue) return;
+
+      const maxScroll = dock.scrollWidth - dock.clientWidth;
+      const showLeft = dock.scrollLeft > 6;
+      const showRight = maxScroll > 6 && dock.scrollLeft < (maxScroll - 6);
+
+      leftCue.classList.toggle('opacity-0', !showLeft);
+      leftCue.classList.toggle('pointer-events-none', !showLeft);
+      rightCue.classList.toggle('opacity-0', !showRight);
+      rightCue.classList.toggle('pointer-events-none', !showRight);
+    }
+
+    function scrollNavDock(deltaPx) {
+      const dock = document.getElementById('primary-nav-dock');
+      if (!dock) return;
+      dock.scrollBy({ left: deltaPx, behavior: 'smooth' });
+    }
+
+    function switchMainTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('nav-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+      }
+
+      if (tabId === 'overview') renderOverviewChart();
+      if (tabId === 'calculator') updateCalculator();
+      if (tabId === 'matrix') renderMatrixTable();
+      if (tabId === 'scenarios') renderScenario();
+      if (tabId === 'simulator') runComplianceSimulator();
+    }
+
+    function jumpToMatrix(mclass) {
+      activeMatrixClass = mclass;
+      switchMainTab('matrix');
+      selectMatrixClass(mclass);
+    }
+
+    // -----------------------------------------------------------------------
+    // 3. MODULE 1: SUB-CLASS SPOTLIGHT & COMPARATIVE CHART
+    // -----------------------------------------------------------------------
+    function selectOverviewSubClass(code) {
+      activeOverviewSubClass = code;
+      document.querySelectorAll('.ov-sub-card').forEach(btn => {
+        if (btn.dataset.ovsub === code) {
+          btn.className = 'ov-sub-card text-left quant-card rounded-2xl p-4 transition ring-2 ring-sky-500 bg-sky-50/40' + (code === 'HVCRE' ? ' col-span-2 sm:col-span-1' : '');
+        } else {
+          btn.className = 'ov-sub-card text-left quant-card rounded-2xl p-4 transition hover:border-sky-300' + (code === 'HVCRE' ? ' col-span-2 sm:col-span-1' : '');
+        }
+      });
+
+      const info = SUBCLASS_SPOTLIGHT[code];
+      const spotEl = document.getElementById('ov-subclass-spotlight');
+      spotEl.innerHTML = `
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-2 max-w-4xl">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded bg-slate-900 text-white text-xs font-extrabold">${info.code}</span>
+              <h3 class="text-base font-extrabold text-slate-900">${info.name}</h3>
+              <span class="text-xs font-mono text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">${info.ref}</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <strong>Definition:</strong> ${info.definition}
+            </p>
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <strong>Cash-Flow Ring-Fencing:</strong> ${info.ringFence}
+            </p>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed">
+              <strong>Dollar Example:</strong> ${info.example}
+            </div>
+          </div>
+          <div class="shrink-0">
+            <button type="button" onclick="jumpToMatrix('${info.matrixKey}')" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-sm">
+              Inspect ${info.code} Slotting Criteria →
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function setOverviewChartMode(mode) {
+      overviewChartMode = mode;
+      const btnUL = document.getElementById('ov-chart-ul');
+      const btnEL = document.getElementById('ov-chart-el');
+      const sub = document.getElementById('ov-chart-subtitle');
+      if (mode === 'UL') {
+        btnUL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm transition';
+        btnEL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+        sub.textContent = 'Comparing General SL and HVCRE Unexpected Loss (UL) risk weights across all five categories.';
+      } else {
+        btnEL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm transition';
+        btnUL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+        sub.textContent = 'Comparing General SL and HVCRE Expected Loss (EL) risk weights across all five categories (Default = 625%).';
+      }
+      renderOverviewChart();
+    }
+
+    function renderOverviewChart() {
+      const ctx = document.getElementById('overviewCompChart');
+      if (!ctx) return;
+      if (overviewChartInstance) overviewChartInstance.destroy();
+
+      const isUL = (overviewChartMode === 'UL');
+      const labels = ['Strong', 'Good', 'Satisfactory', 'Weak', 'Default'];
+
+      const datasets = isUL
+        ? [
+            { label: 'General SL (Standard)', data: [70, 90, 115, 250, 0], backgroundColor: '#0284c7', borderRadius: 5 },
+            { label: 'General SL (Preferential)', data: [50, 70, 115, 250, 0], backgroundColor: '#7dd3fc', borderRadius: 5 },
+            { label: 'HVCRE (Standard)', data: [95, 120, 140, 250, 0], backgroundColor: '#d97706', borderRadius: 5 },
+            { label: 'HVCRE (Preferential)', data: [70, 95, 140, 250, 0], backgroundColor: '#fcd34d', borderRadius: 5 }
+          ]
+        : [
+            { label: 'General SL EL (Standard)', data: [5, 10, 35, 100, 625], backgroundColor: '#4f46e5', borderRadius: 5 },
+            { label: 'General SL EL (Preferential)', data: [0, 5, 35, 100, 625], backgroundColor: '#93c5fd', borderRadius: 5 },
+            { label: 'HVCRE EL (Standard)', data: [5, 5, 35, 100, 625], backgroundColor: '#e11d48', borderRadius: 5 },
+            { label: 'HVCRE EL (Preferential - CRE33.12 5% Floor)', data: [5, 5, 35, 100, 625], backgroundColor: '#fda4af', borderRadius: 5 }
+          ];
+
+      overviewChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+            tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y}%` } }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { callback: v => v + '%', font: { size: 11 } } },
+            x: { ticks: { font: { size: 11, weight: '600' } } }
+          }
+        }
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. MODULE 2: RWA & EL CALCULATOR (WITH CALC-01 & CALC-02)
+    // -----------------------------------------------------------------------
+    function setCalcSlot(slot) {
+      calcSlot = slot;
+      document.querySelectorAll('.slot-btn').forEach(btn => {
+        if (btn.dataset.slot === slot) {
+          btn.className = 'slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-slate-900 text-white border-slate-900 shadow-sm';
+        } else {
+          btn.className = 'slot-btn py-2 px-1 rounded-xl text-xs font-bold border transition bg-white text-slate-700 border-slate-200 hover:bg-slate-50';
+        }
+      });
+      updateCalculator();
+    }
+
+    function handleEADSlider() {
+      const sliderVal = parseFloat(document.getElementById('calc-ead-range').value) || 0;
+      document.getElementById('calc-ead-input').value = sliderVal.toFixed(2);
+      document.getElementById('calc-ead-neg-warn').classList.add('hidden');
+      updateCalculator();
+    }
+
+    function handleCalculatorTextInput() {
+      // Do NOT overwrite input .value here so cursor never jumps during active typing
+      const eadCheck = parseSafeNonNegative(document.getElementById('calc-ead-input').value);
+      document.getElementById('calc-ead-neg-warn').classList.toggle('hidden', !eadCheck.isNegative);
+      if (eadCheck.value <= 500) {
+        document.getElementById('calc-ead-range').value = eadCheck.value;
+      }
+
+      const provCheck = parseSafeNonNegative(document.getElementById('calc-prov-input').value);
+      document.getElementById('calc-prov-neg-warn').classList.toggle('hidden', !provCheck.isNegative);
+
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const subclass = document.getElementById('calc-subclass').value;
+      const eadParsed = parseSafeNonNegative(document.getElementById('calc-ead-input').value);
+      const provParsed = parseSafeNonNegative(document.getElementById('calc-prov-input').value);
+      const ead = eadParsed.value;
+      const provisions = provParsed.value;
+
+      const maturity = parseFloat(document.getElementById('calc-maturity').value) || 2.0;
+      const natDisc = document.getElementById('calc-nat-disc').checked;
+      const strongUW = document.getElementById('calc-strong-uw').checked;
+
+      document.getElementById('calc-ead-badge').textContent = fmtM(ead);
+      document.getElementById('calc-prov-badge').textContent = fmtM(provisions);
+      document.getElementById('calc-rating-anchor').textContent = `Anchor: ${RATING_ANCHORS[calcSlot]}`;
+
+      // Strict < 2.5 years check per CRE33.4 & CRE33.7
+      const matStrictlyLess25 = maturity < 2.5;
+      const matBadge = document.getElementById('calc-mat-badge');
+      if (matStrictlyLess25) {
+        matBadge.textContent = `${maturity.toFixed(1)} yrs (< 2.5y)`;
+        matBadge.className = 'text-xs font-bold mono-num px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+      } else {
+        matBadge.textContent = `${maturity.toFixed(1)} yrs (≥ 2.5y)`;
+        matBadge.className = 'text-xs font-bold mono-num px-2 py-0.5 rounded bg-slate-200 text-slate-700';
+      }
+
+      const conditionMet = matStrictlyLess25 || strongUW;
+      const prefQualified = natDisc && conditionMet;
+      const m = computeCRE33(subclass, calcSlot, ead, prefQualified, provisions);
+
+      // Preferential Status Callout
+      const prefStatusEl = document.getElementById('calc-pref-status');
+      if (!natDisc) {
+        prefStatusEl.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-slate-200/70 text-slate-700 border border-slate-300 leading-snug';
+        prefStatusEl.textContent = 'Standard Weights Active: National supervisor discretion is turned off.';
+      } else if (!m.slotCanPref) {
+        prefStatusEl.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-amber-100/80 text-amber-900 border border-amber-300 leading-snug';
+        prefStatusEl.textContent = `Standard Weights Active: Preferential weights apply only to Strong and Good slots, not ${calcSlot}.`;
+      } else if (!conditionMet) {
+        prefStatusEl.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-amber-100/80 text-amber-900 border border-amber-300 leading-snug';
+        prefStatusEl.textContent = 'Standard Weights Active: Remaining maturity is 2.5 years or longer and strong underwriting is unchecked.';
+      } else if (m.isHVCRE) {
+        prefStatusEl.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-sky-100 text-sky-950 border border-sky-300 leading-snug';
+        prefStatusEl.textContent = 'HVCRE Preferential Active (CRE33.7 & CRE33.12): UL risk weight drops, while EL risk weight remains locked at 5%.';
+      } else {
+        prefStatusEl.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-emerald-100 text-emerald-950 border border-emerald-300 leading-snug';
+        prefStatusEl.textContent = 'General SL Preferential Active (CRE33.4 & CRE33.10): Both UL and EL risk weights drop.';
+      }
+
+      // Update Primary KPI Cards
+      document.getElementById('res-rwa').textContent = fmtM(m.rwa);
+      document.getElementById('res-ul-rw').textContent = `UL RW: ${(m.ulRW * 100).toFixed(0)}%`;
+      document.getElementById('res-ul-cap').textContent = fmtM(m.ulCap);
+      document.getElementById('res-el-amt').textContent = fmtM(m.elAmt);
+      document.getElementById('res-el-rw').textContent = `EL RW: ${(m.elRW * 100).toFixed(0)}%`;
+
+      // QA FIX CALC-01: Default Grade + Excess Provisions Callout & Tooltip
+      const isDefaultExcess = (calcSlot === 'Default' && m.netProv > 0.00001);
+      document.getElementById('calc-default-excess-banner').classList.toggle('hidden', !isDefaultExcess);
+      document.getElementById('cre35-default-tooltip').classList.toggle('hidden', !isDefaultExcess);
+
+      const provDiffEl = document.getElementById('res-prov-diff');
+      const provTagEl = document.getElementById('res-prov-tag');
+      if (Math.abs(m.netProv) <= 0.00001) {
+        provDiffEl.textContent = '$0.00M';
+        provDiffEl.className = 'text-xl font-extrabold text-slate-800 mono-num mt-1';
+        provTagEl.textContent = 'Exact EL Match';
+        provTagEl.className = 'inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700';
+      } else if (m.netProv < 0) {
+        provDiffEl.textContent = fmtM(m.netProv);
+        provDiffEl.className = 'text-xl font-extrabold text-rose-600 mono-num mt-1';
+        provTagEl.textContent = 'CET1 Shortfall';
+        provTagEl.className = 'inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800';
+      } else if (isDefaultExcess) {
+        provDiffEl.textContent = '$0.00M';
+        provDiffEl.className = 'text-xl font-extrabold text-indigo-700 mono-num mt-1';
+        provTagEl.textContent = `Tier 2 Cap $0.00M (Raw +${fmtM(m.netProv)})`;
+        provTagEl.className = 'inline-block mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-900';
+      } else {
+        const eligibleT2 = Math.min(m.netProv, m.tier2Cap);
+        provDiffEl.textContent = '+' + fmtM(eligibleT2);
+        provDiffEl.className = 'text-xl font-extrabold text-emerald-700 mono-num mt-1';
+        provTagEl.textContent = `Tier 2 Add-Back (Cap ${fmtM(m.tier2Cap)})`;
+        provTagEl.className = 'inline-block mt-1.5 text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+      }
+
+      // Formula Breakdown Trace
+      document.getElementById('trace-rule-ref').textContent = m.isHVCRE ? 'CRE33.5 – CRE33.12 & CRE35' : 'CRE33.2 – CRE33.10 & CRE35';
+      document.getElementById('step-1-math').textContent = `${fmtM(ead)} × ${(m.ulRW * 100).toFixed(0)}% = ${fmtM(m.rwa)}`;
+      document.getElementById('step-2-math').textContent = `8% × ${fmtM(m.rwa)} = ${fmtM(m.ulCap)}`;
+      document.getElementById('step-3-math').textContent = `8% × ${(m.elRW * 100).toFixed(0)}% × ${fmtM(ead)} = ${fmtM(m.elAmt)}`;
+
+      const expEl = document.getElementById('step-explanation');
+      if (m.netProv < -0.00001) {
+        document.getElementById('step-4-math').textContent = `Shortfall: ${fmtM(Math.abs(m.netProv))} CET1 Deduction`;
+        expEl.textContent = `Eligible provisions (${fmtM(provisions)}) sit below Expected Loss (${fmtM(m.elAmt)}). Under CRE35, the bank deducts the ${fmtM(Math.abs(m.netProv))} shortfall from Common Equity Tier 1 (CET1) capital.`;
+      } else if (isDefaultExcess) {
+        document.getElementById('step-4-math').textContent = `Excess +${fmtM(m.netProv)} | Tier 2 Cap $0.00M`;
+        expEl.textContent = `Provisions exceed the 50% Default Expected Loss by ${fmtM(m.netProv)}. Because Default carries a 0% UL risk weight, credit RWA equals $0.00M and the 0.6% Tier 2 cap equals $0.00M.`;
+      } else {
+        const eligibleT2 = Math.min(Math.max(0, m.netProv), m.tier2Cap);
+        document.getElementById('step-4-math').textContent = `Excess +${fmtM(Math.max(0, m.netProv))} | Tier 2 Cap ${fmtM(m.tier2Cap)}`;
+        expEl.textContent = `Provisions cover Expected Loss with a ${fmtM(Math.max(0, m.netProv))} surplus. Under CRE35, the bank adds ${fmtM(eligibleT2)} to Tier 2 capital, subject to the 0.6% credit RWA ceiling (${fmtM(m.tier2Cap)}).`;
+      }
+
+      renderDealFiveGradesChart(subclass, ead, prefQualified);
+    }
+
+    function renderDealFiveGradesChart(subclass, ead, prefQualified) {
+      const ctx = document.getElementById('dealFiveGradesChart');
+      if (!ctx) return;
+      if (dealGradesChartInstance) dealGradesChartInstance.destroy();
+
+      const rwaArr = [];
+      const elArr = [];
+      const rwaColors = [];
+
+      SLOTS_ORDER.forEach(s => {
+        const res = computeCRE33(subclass, s, ead, prefQualified, 0);
+        rwaArr.push(Number(res.rwa.toFixed(2)));
+        elArr.push(Number(res.elAmt.toFixed(2)));
+        rwaColors.push(s === calcSlot ? '#0284c7' : '#cbd5e1');
+      });
+
+      dealGradesChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: SLOTS_ORDER,
+          datasets: [
+            { label: 'Credit RWA ($M)', data: rwaArr, backgroundColor: rwaColors, borderRadius: 6 },
+            { label: 'Expected Loss ($M)', data: elArr, backgroundColor: '#f59e0b', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+            tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toFixed(2)}M` } }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'M', font: { size: 10 } } },
+            x: { ticks: { font: { size: 11, weight: '600' } } }
+          }
+        }
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // 5. MODULE 3: COMPLETE SLOTTING MATRIX (CRE33.13 – 33.16 + FAQ1)
+    // -----------------------------------------------------------------------
+    const SLOTTING_MATRIX = {
+      PF: {
+        title: 'CRE33.13 — Project Finance Slotting Criteria (All 29 Sub-Factors)',
+        rows: [
+          {
+            pillar: 'Financial Strength',
+            factor: 'Market conditions',
+            climate: true,
+            climateNote: 'FAQ1 Transition Risk: Clean energy mandates erode demand for coal or unhedged gas generators.',
+            Strong: 'Few competing suppliers or substantial and durable advantage in location, cost, or technology. Demand is strong and growing.',
+            Good: 'Few competing suppliers or better than average location, cost, or technology, though this situation may not last. Demand is strong and stable.',
+            Satisfactory: 'Project has no advantage in location, cost, or technology. Demand is adequate and stable.',
+            Weak: 'Project has worse than average location, cost, or technology. Demand is weak and declining.',
+            example: 'A desalination plant with an exclusive municipal water franchise in an arid city grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Financial ratios (DSCR, LLCR, PLCR, Debt-to-Equity)',
+            climate: true,
+            climateNote: 'FAQ1 Financial Strength: Base-case forecasts incorporate carbon pricing and climate insurance costs.',
+            Strong: 'Strong financial ratios considering the level of project risk; very robust economic assumptions.',
+            Good: 'Strong to acceptable financial ratios considering the level of project risk; robust project economic assumptions.',
+            Satisfactory: 'Standard financial ratios considering the level of project risk.',
+            Weak: 'Aggressive financial ratios considering the level of project risk.',
+            example: 'A contracted solar plant with 1.65x minimum DSCR and 35% sponsor equity grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Stress analysis',
+            climate: true,
+            climateNote: 'FAQ1 Stress Testing: Cash flows cover debt service under extreme weather downtime and carbon tax shocks.',
+            Strong: 'The project can meet its financial obligations under sustained, severely stressed economic or sectoral conditions.',
+            Good: 'The project can meet its obligations under normal stressed conditions and defaults only under severe economic conditions.',
+            Satisfactory: 'The project is vulnerable to common cyclical stresses and may default in a normal downturn.',
+            Weak: 'The project is likely to default unless conditions improve soon.',
+            example: 'A toll bridge maintaining 1.15x DSCR during a 25% traffic recession grades Strong.'
+          },
+          {
+            pillar: 'Financial Structure',
+            factor: 'Duration of credit vs. duration of project',
+            climate: false,
+            Strong: 'Useful life of the project significantly exceeds tenor of the loan.',
+            Good: 'Useful life of the project exceeds tenor of the loan.',
+            Satisfactory: 'Useful life of the project exceeds tenor of the loan.',
+            Weak: 'Useful life of the project may not exceed tenor of the loan.',
+            example: 'A 14-year project loan against a hydroelectric asset with a 40-year technical life grades Strong.'
+          },
+          {
+            pillar: 'Financial Structure',
+            factor: 'Amortisation schedule',
+            climate: false,
+            Strong: 'Amortising debt.',
+            Good: 'Amortising debt.',
+            Satisfactory: 'Amortising debt repayments with limited bullet payment.',
+            Weak: 'Bullet repayment or amortising debt repayments with high bullet repayment.',
+            example: 'Semi-annual sculpted principal payments retiring 100% of debt before maturity grade Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Political risk, including transfer risk',
+            climate: false,
+            Strong: 'Very low exposure; strong mitigation instruments, if needed.',
+            Good: 'Low exposure; satisfactory mitigation instruments, if needed.',
+            Satisfactory: 'Moderate exposure; fair mitigation instruments.',
+            Weak: 'High exposure; no or weak mitigation instruments.',
+            example: 'Export credit agency political risk wrap covering currency convertibility supports Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Force majeure risk (war, civil unrest, weather)',
+            climate: true,
+            climateNote: 'FAQ1 Physical Risk: Flood barriers, storm-hardened turbines, and catastrophe insurance mitigate severe weather.',
+            Strong: 'Low exposure.',
+            Good: 'Acceptable exposure.',
+            Satisfactory: 'Standard protection.',
+            Weak: 'Significant risks, not fully mitigated.',
+            example: 'An uninsurable coastal plant lacking storm-surge protection grades Weak.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Government support & long-term country importance',
+            climate: false,
+            Strong: 'Project of strategic importance for the country (preferably export-oriented); strong support from Government.',
+            Good: 'Project considered important for the country; good level of support from Government.',
+            Satisfactory: 'Project may not be strategic but brings unquestionable benefits; Government support may not be explicit.',
+            Weak: 'Project not key to the country; no or weak support from Government.',
+            example: 'A national grid interconnector backed by a sovereign ministry support letter grades Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Stability of legal and regulatory environment (change in law)',
+            climate: true,
+            climateNote: 'FAQ1 Transition Law Risk: Sudden emissions caps or coal phase-out statutes directly hit unhedged plants.',
+            Strong: 'Favourable and stable regulatory environment over the long term.',
+            Good: 'Favourable and stable regulatory environment over the medium term.',
+            Satisfactory: 'Regulatory changes can be predicted with a fair level of certainty.',
+            Weak: 'Current or future regulatory issues may affect the project.',
+            example: 'Statutory feed-in tariff protected by change-in-law compensation clauses grades Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Acquisition of supports & local content relief approvals',
+            climate: false,
+            Strong: 'Strong.',
+            Good: 'Satisfactory.',
+            Satisfactory: 'Fair.',
+            Weak: 'Weak.',
+            example: 'Signed customs waivers and local content exemptions delivered prior to drawdown grade Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Enforceability of contracts, collateral and security',
+            climate: false,
+            Strong: 'Contracts, collateral and security are enforceable.',
+            Good: 'Contracts, collateral and security are enforceable.',
+            Satisfactory: 'Considered enforceable even if certain non-key issues may exist.',
+            Weak: 'Unresolved key issues exist in respect of actual enforcement of contracts, collateral and security.',
+            example: 'Clean external legal opinions confirming direct lender step-in rights grade Strong.'
+          },
+          {
+            pillar: 'Transaction Characteristics',
+            factor: 'Design and technology risk',
+            climate: false,
+            Strong: 'Fully proven technology and design.',
+            Good: 'Fully proven technology and design.',
+            Satisfactory: 'Proven technology and design; start-up issues are mitigated by a strong completion package.',
+            Weak: 'Unproven technology and design; technology issues exist and/or complex design.',
+            example: 'Commercially proven turbines with 10+ years of fleet operating history grade Strong.'
+          },
+          {
+            pillar: 'Construction Risk',
+            factor: 'Permitting and siting',
+            climate: false,
+            Strong: 'All permits have been obtained.',
+            Good: 'Some permits remain outstanding but their receipt is considered very likely.',
+            Satisfactory: 'Some permits remain outstanding but the permitting process is well defined and considered routine.',
+            Weak: 'Key permits still need to be obtained and are not routine; significant conditions may attach.',
+            example: 'Full environmental and grid-connection permits issued before financial close grade Strong.'
+          },
+          {
+            pillar: 'Construction Risk',
+            factor: 'Type of construction contract',
+            climate: false,
+            Strong: 'Fixed-price date-certain turnkey construction EPC contract.',
+            Good: 'Fixed-price date-certain turnkey construction EPC.',
+            Satisfactory: 'Fixed-price date-certain turnkey construction contract with one or several contractors.',
+            Weak: 'No or partial fixed-price turnkey contract and/or interfacing issues with multiple contractors.',
+            example: 'Single-point wrapped EPC contract locks construction budget and completion date (Strong).'
+          },
+          {
+            pillar: 'Construction Risk',
+            factor: 'Completion guarantees',
+            climate: false,
+            Strong: 'Substantial liquidated damages backed by financial substance and/or strong completion guarantee from top sponsors.',
+            Good: 'Significant liquidated damages and/or completion guarantee from sponsors with good financial standing.',
+            Satisfactory: 'Adequate liquidated damages and/or completion guarantee from sponsors with good financial standing.',
+            Weak: 'Inadequate liquidated damages or not backed by financial substance or weak completion guarantees.',
+            example: 'Irrevocable bank letters of credit backing 20% delay and performance LDs grade Strong.'
+          },
+          {
+            pillar: 'Construction Risk',
+            factor: 'Contractor track record and financial strength',
+            climate: false,
+            Strong: 'Strong.',
+            Good: 'Good.',
+            Satisfactory: 'Satisfactory.',
+            Weak: 'Weak.',
+            example: 'Investment-grade global engineering group with 15 completed sister plants grades Strong.'
+          },
+          {
+            pillar: 'Operating Risk',
+            factor: 'Scope and nature of O&M contracts',
+            climate: false,
+            Strong: 'Strong long-term O&M contract, preferably with performance incentives, and/or O&M reserve accounts.',
+            Good: 'Long-term O&M contract, and/or O&M reserve accounts.',
+            Satisfactory: 'Limited O&M contract or O&M reserve account.',
+            Weak: 'No O&M contract: risk of high operational cost overruns beyond mitigants.',
+            example: '15-year availability-guaranteed O&M contract plus funded 6-month O&M reserve grades Strong.'
+          },
+          {
+            pillar: 'Operating Risk',
+            factor: 'Operator expertise, track record & financial strength',
+            climate: false,
+            Strong: 'Very strong, or committed technical assistance of the sponsors.',
+            Good: 'Strong.',
+            Satisfactory: 'Acceptable.',
+            Weak: 'Limited/weak, or local operator dependent on local authorities.',
+            example: 'Experienced utility operator managing 12 GW of assets at 98.5% availability grades Strong.'
+          },
+          {
+            pillar: 'Off-take Risk',
+            factor: '(a) Take-or-pay or fixed-price off-take contract',
+            climate: false,
+            Strong: 'Excellent off-taker creditworthiness; strong termination clauses; contract tenor comfortably exceeds debt maturity.',
+            Good: 'Good off-taker creditworthiness; strong termination clauses; contract tenor exceeds debt maturity.',
+            Satisfactory: 'Acceptable financial standing of off-taker; normal termination clauses; contract tenor matches debt maturity.',
+            Weak: 'Weak off-taker; weak termination clauses; contract tenor does not exceed debt maturity.',
+            example: '18-year fixed-price PPA with an A-rated grid utility backing a 15-year loan grades Strong.'
+          },
+          {
+            pillar: 'Off-take Risk',
+            factor: '(b) No take-or-pay or fixed-price off-take contract',
+            climate: true,
+            climateNote: 'FAQ1 Demand Shift: Uncontracted carbon-intensive output faces price discounts in decarbonising markets.',
+            Strong: 'Essential service or commodity sold widely on a world market; output absorbed at projected prices even below historic growth.',
+            Good: 'Essential service or commodity sold widely on a regional market absorbed at projected prices at historical growth rates.',
+            Satisfactory: 'Commodity sold on a limited market that may absorb it only at lower than projected prices.',
+            Weak: 'Project output is demanded by only one or a few buyers or is not sold on an organised market.',
+            example: 'Merchant plant selling power to a single unrated industrial factory grades Weak.'
+          },
+          {
+            pillar: 'Supply Risk',
+            factor: 'Feedstock price, volume, transport & supplier strength',
+            climate: false,
+            Strong: 'Long-term supply contract with supplier of excellent financial standing.',
+            Good: 'Long-term supply contract with supplier of good financial standing.',
+            Satisfactory: 'Long-term supply contract with supplier of good standing – a degree of price risk may remain.',
+            Weak: 'Short-term supply contract or financially weak supplier – a degree of price risk definitely remains.',
+            example: '15-year indexed gas supply contract with an AA-rated producer grades Strong.'
+          },
+          {
+            pillar: 'Supply Risk',
+            factor: 'Reserve risks (natural resource development)',
+            climate: false,
+            Strong: 'Independently audited, proven and developed reserves well in excess of lifetime project requirements.',
+            Good: 'Independently audited, proven and developed reserves in excess of lifetime project requirements.',
+            Satisfactory: 'Proven reserves can supply the project adequately through the maturity of the debt.',
+            Weak: 'Project relies to some extent on potential and undeveloped reserves.',
+            example: 'Independent engineer reserve audit certifying 2.3x loan-life ore volume grades Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Sponsor track record, financial strength & sector experience',
+            climate: false,
+            Strong: 'Strong sponsor with excellent track record and high financial standing.',
+            Good: 'Good sponsor with satisfactory track record and good financial standing.',
+            Satisfactory: 'Adequate sponsor with adequate track record and good financial standing.',
+            Weak: 'Weak sponsor with no or questionable track record and/or financial weaknesses.',
+            example: 'A-rated global energy major with 25 years of offshore wind execution grades Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Sponsor support (equity, ownership clause, cash incentive)',
+            climate: false,
+            Strong: 'Strong. Project is highly strategic for the sponsor (core business – long-term strategy).',
+            Good: 'Good. Project is strategic for the sponsor (core business – long-term strategy).',
+            Satisfactory: 'Acceptable. Project is considered important for the sponsor (core business).',
+            Weak: 'Limited. Project is not key to sponsor long-term strategy or core business.',
+            example: '35% upfront cash equity plus mandatory ownership lock-up covenants grade Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Assignment of contracts and accounts',
+            climate: false,
+            Strong: 'Fully comprehensive.',
+            Good: 'Comprehensive.',
+            Satisfactory: 'Acceptable.',
+            Weak: 'Weak.',
+            example: 'Tripartite direct agreements assigning all EPC, PPA, insurance, and revenue accounts grade Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Pledge of assets (quality, value and liquidity)',
+            climate: false,
+            Strong: 'First perfected security interest in all project assets, contracts, permits and accounts necessary to run the project.',
+            Good: 'Perfected security interest in all project assets, contracts, permits and accounts necessary to run the project.',
+            Satisfactory: 'Acceptable security interest in all project assets, contracts, permits and accounts necessary to run the project.',
+            Weak: 'Little security or collateral for lenders; weak negative pledge clause.',
+            example: 'Registered first-ranking mortgage over plant site, turbines, licences, and escrows grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Lender control over cash flow',
+            climate: false,
+            Strong: 'Strong (cash sweeps, independent escrow accounts).',
+            Good: 'Satisfactory.',
+            Satisfactory: 'Fair.',
+            Weak: 'Weak.',
+            example: 'Trustee-controlled cash waterfall with automatic DSCR<1.20x cash sweep grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Strength of the covenant package',
+            climate: false,
+            Strong: 'Covenant package is strong for this project type. Project may issue no additional debt.',
+            Good: 'Covenant package is satisfactory. Project may issue extremely limited additional debt.',
+            Satisfactory: 'Covenant package is fair. Project may issue limited additional debt.',
+            Weak: 'Covenant package is insufficient. Project may issue unlimited additional debt.',
+            example: 'Strict prohibition on additional debt plus 1.25x distribution lock-up test grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Reserve funds (debt service, O&M, renewal, unforeseen)',
+            climate: false,
+            Strong: 'Longer than average coverage period; all reserve funds fully funded in cash or LCs from highly rated bank.',
+            Good: 'Average coverage period; all reserve funds fully funded.',
+            Satisfactory: 'Average coverage period; all reserve funds fully funded.',
+            Weak: 'Shorter than average coverage period; reserve funds funded from operating cash flows.',
+            example: '9-month DSRA and major maintenance reserve funded in cash at financial close grade Strong.'
+          }
+        ]
+      },
+
+      IPRE: {
+        title: 'CRE33.14 — IPRE & HVCRE Slotting Criteria (All 15 Sub-Factors)',
+        rows: [
+          {
+            pillar: 'Financial Strength',
+            factor: 'Market conditions',
+            climate: true,
+            climateNote: 'FAQ1 Transition Demand: Corporate tenants exit inefficient high-emission offices in favour of green-certified towers.',
+            Strong: 'Supply and demand for project type and location are in equilibrium. Competitive properties coming to market are equal or lower than forecasted demand.',
+            Good: 'Supply and demand are in equilibrium. Competitive properties coming to market roughly equal forecasted demand.',
+            Satisfactory: 'Market conditions are roughly in equilibrium. Competitive properties are coming on market and design may lag new projects.',
+            Weak: 'Market conditions are weak with uncertain recovery. Property loses tenants at lease expiration and new lease terms weaken.',
+            example: 'Prime urban logistics hub in a supply-capped port zone with 98% occupancy grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Financial ratios and advance rate (DSCR & LTV)',
+            climate: false,
+            Strong: 'Property DSCR is strong and LTV is low given property type. Transaction is underwritten to secondary market standards.',
+            Good: 'DSCR and LTV are satisfactory. Transaction is underwritten to secondary market standards.',
+            Satisfactory: 'Property DSCR has deteriorated and its value has fallen, increasing its LTV.',
+            Weak: 'Property DSCR has deteriorated significantly and its LTV sits well above underwriting standards for new loans.',
+            example: 'Stabilised office tower at 52% LTV and 1.65x DSCR grades Strong; 86% LTV grades Weak.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Stress analysis',
+            climate: true,
+            climateNote: 'FAQ1 Stress Testing: Models energy-efficiency retrofit capex alongside +250 bps interest shocks.',
+            Strong: 'Property resources, contingencies and liability structure allow it to meet obligations during severe financial stress.',
+            Good: 'Property meets obligations under sustained financial stress and defaults only under severe economic conditions.',
+            Satisfactory: 'During an economic downturn, revenue decline limits capex funding and significantly increases default risk.',
+            Weak: 'Property financial condition is strained and is likely to default unless conditions improve in the near term.',
+            example: 'Multifamily complex maintaining >1.20x DSCR under a 20% gross rent stress grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Cash-flow predictability: (a) Complete and stabilised',
+            climate: false,
+            Strong: 'Long-term leases with creditworthy tenants, scattered maturities, strong tenant retention, low vacancy, predictable expenses.',
+            Good: 'Mostly long-term leases with tenants ranging in creditworthiness, normal turnover, low vacancy, predictable expenses.',
+            Satisfactory: 'Mostly medium-term leases, moderate turnover and vacancy, expenses relatively predictable but vary with revenue.',
+            Weak: 'Leases of various terms, very high turnover, high vacancy, significant tenant-fitout expenses.',
+            example: '10-year staggered leases to investment-grade corporate headquarters tenants grade Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Cash-flow predictability: (b) Complete but not stabilised',
+            climate: false,
+            Strong: 'Leasing activity meets or exceeds projections. Project should achieve stabilisation in the near future.',
+            Good: 'Leasing activity meets or exceeds projections. Project should achieve stabilisation in the near future.',
+            Satisfactory: 'Most leasing activity is within projections; however, stabilisation will not occur for some time.',
+            Weak: 'Market rents miss expectations. Despite target occupancy, cash-flow coverage is tight due to disappointing revenue.',
+            example: 'Newly completed warehouse park already 88% leased ahead of underwriting schedule grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Cash-flow predictability: (c) Construction phase',
+            climate: false,
+            Strong: 'Entirely pre-leased through loan tenor or pre-sold to IG tenant/buyer, or binding take-out from an IG lender.',
+            Good: 'Entirely pre-leased or pre-sold to a creditworthy tenant/buyer, or binding permanent financing from a creditworthy lender.',
+            Satisfactory: 'Leasing activity is within projections but building may not be pre-leased and may lack take-out financing.',
+            Weak: 'Deteriorating due to cost overruns, market drop, tenant cancellations, or dispute with permanent lender.',
+            example: 'Speculative office build started with zero pre-leases and no take-out commitment grades Satisfactory or Weak.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Location',
+            climate: true,
+            climateNote: 'FAQ1 Physical Hazard: Properties in coastal storm-surge or river flood zones suffer lower liquidity and higher insurance deductibles.',
+            Strong: 'Property sits in a highly desirable location convenient to services that tenants desire.',
+            Good: 'Property sits in a desirable location convenient to services that tenants desire.',
+            Satisfactory: 'Property location lacks a competitive advantage.',
+            Weak: 'Property location, configuration, design and maintenance have contributed to difficulties.',
+            example: 'CBD tower directly connected to a central metro interchange grades Strong.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Design and condition',
+            climate: true,
+            climateNote: 'FAQ1 Green Design: LEED Platinum thermal efficiency shields the asset against municipal building-emission fines.',
+            Strong: 'Property is favoured due to design, configuration, and maintenance, and is highly competitive with new properties.',
+            Good: 'Property is appropriate in design, configuration and maintenance, and competitive with new properties.',
+            Satisfactory: 'Property is adequate in configuration, design and maintenance.',
+            Weak: 'Weaknesses exist in property configuration, design or maintenance.',
+            example: 'Modern Grade-A tower with smart HVAC and zero deferred maintenance grades Strong.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Property is under construction',
+            climate: false,
+            Strong: 'Construction budget is conservative and technical hazards are limited. Contractors are highly qualified.',
+            Good: 'Construction budget is conservative and technical hazards are limited. Contractors are highly qualified.',
+            Satisfactory: 'Construction budget is adequate and contractors are ordinarily qualified.',
+            Weak: 'Project is over budget or unrealistic given technical hazards. Contractors may be under-qualified.',
+            example: 'Fixed-price build contract with a 10% hard cost contingency and Tier-1 builder grades Strong.'
+          },
+          {
+            pillar: 'Sponsor / Developer',
+            factor: 'Financial capacity and willingness to support property',
+            climate: false,
+            Strong: 'Substantial cash contribution, substantial resources, limited direct/contingent liabilities, geographically diversified.',
+            Good: 'Material cash contribution; financial condition allows shortfall support; properties across several regions.',
+            Satisfactory: 'Contribution may be immaterial or non-cash. Average to below-average financial resources.',
+            Weak: 'Sponsor/developer lacks capacity or willingness to support the property.',
+            example: 'Institutional REIT contributing 40% cash equity with low balance-sheet leverage grades Strong.'
+          },
+          {
+            pillar: 'Sponsor / Developer',
+            factor: 'Reputation and track record with similar properties',
+            climate: false,
+            Strong: 'Experienced management and high sponsor quality. Strong reputation and lengthy successful record.',
+            Good: 'Appropriate management and sponsor quality with a successful record.',
+            Satisfactory: 'Moderate management and sponsor quality; track record raises no serious concerns.',
+            Weak: 'Ineffective management and substandard sponsor quality contributing to past difficulties.',
+            example: 'Developer with 25 delivered commercial towers and zero loan restructurings grades Strong.'
+          },
+          {
+            pillar: 'Sponsor / Developer',
+            factor: 'Relationships with relevant real estate actors',
+            climate: false,
+            Strong: 'Strong relationships with leading actors such as leasing agents.',
+            Good: 'Proven relationships with leading actors such as leasing agents.',
+            Satisfactory: 'Adequate relationships with leasing agents and real estate service providers.',
+            Weak: 'Poor relationships with leasing agents and service providers.',
+            example: 'Retained exclusive leasing mandate with a top global commercial brokerage grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Nature of lien',
+            climate: false,
+            Strong: 'Perfected first lien.',
+            Good: 'Perfected first lien (or junior lien where total LTV inclusive of senior positions stays within typical first-loan LTV).',
+            Satisfactory: 'Perfected first lien (or qualifying low-total-LTV junior lien).',
+            Weak: 'Ability of lender to foreclose is constrained.',
+            example: 'Registered first-ranking legal mortgage backed by clean title insurance grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Assignment of rents (for long-term leased projects)',
+            climate: false,
+            Strong: 'Lender holds rent assignment plus current rent roll and lease copies enabling direct rent collection notice.',
+            Good: 'Lender holds rent assignment plus current rent roll and lease copies.',
+            Satisfactory: 'Lender holds rent assignment plus current rent roll and lease copies.',
+            Weak: 'Lender has not obtained lease assignment or lacks current tenant records to redirect rent.',
+            example: 'Perfected rent assignment paired with quarterly verified tenant rent rolls grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Quality of the insurance coverage',
+            climate: true,
+            climateNote: 'FAQ1 Climate Mitigation: Full replacement-value property, flood, windstorm, and loss-of-rent cover.',
+            Strong: 'Appropriate.',
+            Good: 'Appropriate.',
+            Satisfactory: 'Appropriate.',
+            Weak: 'Substandard.',
+            example: 'All-risk hazard and 24-month rental interruption insurance from AA-rated carriers grades Strong.'
+          }
+        ]
+      },
+
+      OF: {
+        title: 'CRE33.15 — Object Finance Slotting Criteria (All 18 Sub-Factors)',
+        rows: [
+          {
+            pillar: 'Financial Strength',
+            factor: 'Market conditions',
+            climate: true,
+            climateNote: 'FAQ1 Transition Risk: Tightening aviation and maritime fuel rules shrink demand for older high-burn assets.',
+            Strong: 'Demand is strong and growing, strong entry barriers, low sensitivity to changes in technology and economic outlook.',
+            Good: 'Demand is strong and stable. Some entry barriers, some sensitivity to changes in technology and economic outlook.',
+            Satisfactory: 'Demand is adequate and stable, limited entry barriers, significant sensitivity to changes in technology and economic outlook.',
+            Weak: 'Demand is weak and declining, vulnerable to changes in technology and economic outlook, highly uncertain environment.',
+            example: 'New-generation fuel-efficient cargo aircraft serving global express routes grade Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Financial ratios (DSCR and LTV)',
+            climate: false,
+            Strong: 'Strong financial ratios considering the type of asset. Very robust economic assumptions.',
+            Good: 'Strong / acceptable financial ratios considering the type of asset. Robust project economic assumptions.',
+            Satisfactory: 'Standard financial ratios for the asset type.',
+            Weak: 'Aggressive financial ratios considering the type of asset.',
+            example: '55% LTV advance rate and 1.55x contracted lease DSCR grade Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Stress analysis',
+            climate: true,
+            climateNote: 'FAQ1 Stress Testing: Evaluates lease renewal haircuts alongside emissions compliance surcharges.',
+            Strong: 'Stable long-term revenues, capable of withstanding severely stressed conditions through an economic cycle.',
+            Good: 'Satisfactory short-term revenues. Loan withstands some adversity; default is likely only under severe economic conditions.',
+            Satisfactory: 'Uncertain short-term revenues. Cash flows are vulnerable to common cyclical stresses and may default in a normal downturn.',
+            Weak: 'Revenues subject to strong uncertainties; asset may default even in normal economic conditions unless conditions improve.',
+            example: '10-year hell-or-high-water lease with an investment-grade carrier grades Strong.'
+          },
+          {
+            pillar: 'Financial Strength',
+            factor: 'Market liquidity',
+            climate: false,
+            Strong: 'Market is structured on a worldwide basis; assets are highly liquid.',
+            Good: 'Market is worldwide or regional; assets are relatively liquid.',
+            Satisfactory: 'Market is regional with limited prospects in the short term, implying lower liquidity.',
+            Weak: 'Local market and/or poor visibility. Low or no liquidity, particularly on niche markets.',
+            example: 'Standard B777F freighters trade globally (Strong); bespoke coastal vessels face narrow local demand (Weak).'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Political risk, including transfer risk',
+            climate: false,
+            Strong: 'Very low; strong mitigation instruments, if needed.',
+            Good: 'Low; satisfactory mitigation instruments, if needed.',
+            Satisfactory: 'Moderate; fair mitigation instruments.',
+            Weak: 'High; no or weak mitigation instruments.',
+            example: 'USD lease payments collected in New York across OECD routes grade Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Legal and regulatory risks',
+            climate: false,
+            Strong: 'Jurisdiction is favourable to repossession and enforcement of contracts.',
+            Good: 'Jurisdiction is favourable to repossession and enforcement of contracts.',
+            Satisfactory: 'Jurisdiction is generally favourable to repossession and enforcement, even if repossession might be long or difficult.',
+            Weak: 'Poor or unstable legal and regulatory environment making repossession lengthy or impossible.',
+            example: 'Cape Town Convention ratifying state with tested IDERA deregistration remedies grades Strong.'
+          },
+          {
+            pillar: 'Transaction Characteristics',
+            factor: 'Financing term compared to economic life of asset',
+            climate: false,
+            Strong: 'Full payout profile / minimum balloon. No grace period.',
+            Good: 'Balloon more significant, but still at satisfactory levels.',
+            Satisfactory: 'Important balloon with potentially grace periods.',
+            Weak: 'Repayment in fine or high balloon.',
+            example: '10-year full-payout loan on a 25-year aircraft grades Strong; 65% maturity balloon grades Weak.'
+          },
+          {
+            pillar: 'Operating Risk',
+            factor: 'Permits / licensing',
+            climate: true,
+            climateNote: 'FAQ1 Regulatory Compliance: Vessels and aircraft must satisfy IMO CII and ICAO emissions certifications.',
+            Strong: 'All permits have been obtained; asset meets current and foreseeable safety regulations.',
+            Good: 'All permits obtained or in process; asset meets current and foreseeable safety regulations.',
+            Satisfactory: 'Most permits obtained or in process, outstanding ones routine; asset meets current safety regulations.',
+            Weak: 'Problems in obtaining all required permits; planned configuration or operations might need revision.',
+            example: 'Full FAA/EASA airworthiness and Chapter 14 noise/emissions certificates grade Strong.'
+          },
+          {
+            pillar: 'Operating Risk',
+            factor: 'Scope and nature of O&M contracts',
+            climate: false,
+            Strong: 'Strong long-term O&M contract, preferably with contractual performance incentives, and/or O&M reserve accounts.',
+            Good: 'Long-term O&M contract, and/or O&M reserve accounts.',
+            Satisfactory: 'Limited O&M contract or O&M reserve account.',
+            Weak: 'No O&M contract: risk of high operational cost overruns beyond mitigants.',
+            example: 'OEM engine maintenance program plus cash maintenance reserve escrow grades Strong.'
+          },
+          {
+            pillar: 'Operating Risk',
+            factor: 'Operator strength, track record & off-lease remarketing (Operating)',
+            climate: false,
+            Strong: 'Excellent track record and strong re-marketing capability.',
+            Good: 'Satisfactory track record and re-marketing capability.',
+            Satisfactory: 'Weak or short track record and uncertain re-marketing capability.',
+            Weak: 'No or unknown track record and inability to re-market the asset.',
+            example: 'Global leasing platform with 99% fleet utilisation across 200+ aircraft grades Strong.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Configuration, size, design & maintenance vs. market',
+            climate: true,
+            climateNote: 'FAQ1 Asset Characteristic Check: Fuel-inefficient or bespoke configurations suffer steep green-transition discounts.',
+            Strong: 'Strong advantage in design and maintenance. Standard configuration meeting a liquid market.',
+            Good: 'Above average design and maintenance. Standard configuration with very limited exceptions.',
+            Satisfactory: 'Average design and maintenance. Somewhat specific configuration causing a narrower market.',
+            Weak: 'Below average design and maintenance. Asset near end of economic life; very specific configuration; very narrow market.',
+            example: 'Factory-standard widebody freighter grades Strong; ageing niche passenger-to-freighter conversion grades Weak.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Resale value',
+            climate: true,
+            climateNote: 'FAQ1 Stranded Asset Risk: Carbon-intensive ships and aircraft risk falling below outstanding debt value.',
+            Strong: 'Current resale value is well above debt value.',
+            Good: 'Resale value is moderately above debt value.',
+            Satisfactory: 'Resale value is slightly above debt value.',
+            Weak: 'Resale value is below debt value.',
+            example: 'Current half-life market value of $110M against an $85M loan grades Strong.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Sensitivity of asset value and liquidity to economic cycles',
+            climate: false,
+            Strong: 'Asset value and liquidity are relatively insensitive to economic cycles.',
+            Good: 'Asset value and liquidity are sensitive to economic cycles.',
+            Satisfactory: 'Asset value and liquidity are quite sensitive to economic cycles.',
+            Weak: 'Asset value and liquidity are highly sensitive to economic cycles.',
+            example: 'Commuter rail rolling stock under public transit concessions shows low cyclicality (Strong).'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Operator strength, track record & remarketing (Sponsor)',
+            climate: false,
+            Strong: 'Excellent track record and strong re-marketing capability.',
+            Good: 'Satisfactory track record and re-marketing capability.',
+            Satisfactory: 'Weak or short track record and uncertain re-marketing capability.',
+            Weak: 'No or unknown track record and inability to re-market the asset.',
+            example: 'Dedicated remarketing desk with airline relationships on five continents grades Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Sponsors track record and financial strength',
+            climate: false,
+            Strong: 'Sponsors with excellent track record and high financial standing.',
+            Good: 'Sponsors with good track record and good financial standing.',
+            Satisfactory: 'Sponsors with adequate track record and good financial standing.',
+            Weak: 'Sponsors with no or questionable track record and/or financial weaknesses.',
+            example: 'Investment-grade transportation group backing the SPV borrower grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Asset control',
+            climate: false,
+            Strong: 'Legal documentation provides effective control (first perfected security interest) on the asset or owning company.',
+            Good: 'Legal documentation provides effective control (perfected security interest) on the asset or owning company.',
+            Satisfactory: 'Legal documentation provides effective control (perfected security interest) on the asset or owning company.',
+            Weak: 'Contract provides little security to the lender and leaves risk of losing control on the asset.',
+            example: 'International Registry first-priority airframe/engine mortgage plus SPV share pledge grades Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Rights & means to monitor location and condition',
+            climate: false,
+            Strong: 'Lender can monitor location and condition at any time and place (regular reports, inspection rights).',
+            Good: 'Lender can monitor location and condition almost at any time and place.',
+            Satisfactory: 'Lender can monitor location and condition almost at any time and place.',
+            Weak: 'Lender ability to monitor location and condition is limited.',
+            example: 'Real-time ADS-B / satellite telemetry plus semi-annual physical inspection rights grade Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Insurance against damages',
+            climate: true,
+            climateNote: 'FAQ1 Insurance Mitigation: All-risk hull and weather peril coverage placed with top international syndicates.',
+            Strong: 'Strong insurance coverage including collateral damages with top quality insurance companies.',
+            Good: 'Satisfactory insurance coverage (not including collateral damages) with good quality insurance companies.',
+            Satisfactory: 'Fair insurance coverage (not including collateral damages) with acceptable quality insurance companies.',
+            Weak: 'Weak insurance coverage or placed with weak quality insurance companies.',
+            example: 'AA-rated aviation hull all-risk and war-risk insurance naming the bank loss payee grades Strong.'
+          }
+        ]
+      },
+
+      CF: {
+        title: 'CRE33.16 — Commodities Finance Slotting Criteria (All 10 Sub-Factors)',
+        rows: [
+          {
+            pillar: 'Financial Strength',
+            factor: 'Degree of over-collateralisation of trade',
+            climate: false,
+            Strong: 'Strong.',
+            Good: 'Good.',
+            Satisfactory: 'Satisfactory.',
+            Weak: 'Weak.',
+            example: '125%–135% LME-hedged copper cathode collateral coverage with daily margining grades Strong.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Country risk',
+            climate: false,
+            Strong: 'No country risk.',
+            Good: 'Limited exposure to country risk (offshore location of reserves in an emerging country).',
+            Satisfactory: 'Exposure to country risk (offshore location of reserves in an emerging country).',
+            Weak: 'Strong exposure to country risk (inland reserves in an emerging country).',
+            example: 'Metal cathodes held in LME-approved Rotterdam port warehouses grade Strong; inland emerging-market depots grade Weak.'
+          },
+          {
+            pillar: 'Political & Legal',
+            factor: 'Mitigation of country risks',
+            climate: false,
+            Strong: 'Very strong mitigation: strong offshore mechanisms, strategic commodity, 1st-class buyer.',
+            Good: 'Strong mitigation: offshore mechanisms, strategic commodity, strong buyer.',
+            Satisfactory: 'Acceptable mitigation: offshore mechanisms, less strategic commodity, acceptable buyer.',
+            Weak: 'Only partial mitigation: no offshore mechanisms, non-strategic commodity, weak buyer.',
+            example: 'Irrevocable payment undertaking from an A-rated buyer into a London offshore escrow grades Strong.'
+          },
+          {
+            pillar: 'Asset Characteristics',
+            factor: 'Liquidity and susceptibility to damage',
+            climate: true,
+            climateNote: 'FAQ1 Physical Damage Risk: Floods and heatwaves spoil perishable agricultural cargoes in port storage.',
+            Strong: 'Commodity is quoted and can be hedged through futures or OTC instruments. Commodity is not susceptible to damage.',
+            Good: 'Commodity is quoted and can be hedged through OTC instruments. Commodity is not susceptible to damage.',
+            Satisfactory: 'Commodity is not quoted but is liquid. Uncertainty about hedging. Commodity is not susceptible to damage.',
+            Weak: 'Commodity is not quoted. Liquidity is limited. No appropriate hedging instruments. Susceptible to damage.',
+            example: 'LME-quoted refined copper hedged via futures grades Strong; unhedged perishable cocoa in humid transit grades Weak.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Financial strength of trader',
+            climate: false,
+            Strong: 'Very strong, relative to trading philosophy and risks.',
+            Good: 'Strong.',
+            Satisfactory: 'Adequate.',
+            Weak: 'Weak.',
+            example: 'Global metals merchant with $4B net worth and ample committed liquidity lines grades Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Track record, including ability to manage logistic process',
+            climate: false,
+            Strong: 'Extensive experience with transaction type. Strong record of operating success and cost efficiency.',
+            Good: 'Sufficient experience with transaction type. Above average record of operating success and cost efficiency.',
+            Satisfactory: 'Limited experience with transaction type. Average record of operating success and cost efficiency.',
+            Weak: 'Limited or uncertain track record in general. Volatile costs and profits.',
+            example: 'Trader executing 200+ seaborne copper shipments yearly with zero demurrage claims grades Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Trading controls and hedging policies',
+            climate: false,
+            Strong: 'Strong standards for counterparty selection, hedging, and monitoring.',
+            Good: 'Adequate standards for counterparty selection, hedging, and monitoring.',
+            Satisfactory: 'Past deals have experienced no or minor problems.',
+            Weak: 'Trader has experienced significant losses on past deals.',
+            example: 'Automated back-to-back LME futures hedging and daily independent risk reporting grade Strong.'
+          },
+          {
+            pillar: 'Strength of Sponsor',
+            factor: 'Quality of financial disclosure',
+            climate: false,
+            Strong: 'Excellent.',
+            Good: 'Good.',
+            Satisfactory: 'Satisfactory.',
+            Weak: 'Financial disclosure contains some uncertainties or is insufficient.',
+            example: 'Big-4 audited annual accounts plus weekly verified collateral borrowing-base certificates grade Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Asset control',
+            climate: false,
+            Strong: 'First perfected security interest provides lender legal control of assets at any time if needed.',
+            Good: 'First perfected security interest provides lender legal control of assets at any time if needed.',
+            Satisfactory: 'Temporary rupture in control during transit is mitigated by trade process knowledge or third-party undertaking.',
+            Weak: 'Contract leaves room for risk of losing control over assets. Recovery could be jeopardised.',
+            example: 'Endorsed LME warehouse warrants or full 3/3 negotiable Bills of Lading held by the bank grade Strong.'
+          },
+          {
+            pillar: 'Security Package',
+            factor: 'Insurance against damages',
+            climate: true,
+            climateNote: 'FAQ1 Marine Weather Cover: All-risk marine cargo and port flood insurance with top underwriters.',
+            Strong: 'Strong insurance coverage including collateral damages with top quality insurance companies.',
+            Good: 'Satisfactory insurance coverage (not including collateral damages) with good quality insurance companies.',
+            Satisfactory: 'Fair insurance coverage (not including collateral damages) with acceptable quality insurance companies.',
+            Weak: 'Weak insurance coverage or placed with weak quality insurance companies.',
+            example: 'Institute Cargo Clauses (A) all-risk marine policy naming the lending bank loss payee grades Strong.'
+          }
+        ]
+      }
+    };
+
+    function selectMatrixClass(mclass) {
+      activeMatrixClass = mclass;
+      document.querySelectorAll('.mclass-btn').forEach(btn => {
+        if (btn.dataset.mclass === mclass) {
+          btn.className = 'mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition';
+        } else {
+          btn.className = 'mclass-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+        }
+      });
+      renderMatrixTable();
+    }
+
+    function resetMatrixFilters() {
+      document.getElementById('matrix-search').value = '';
+      document.getElementById('matrix-grade-focus').value = 'ALL';
+      renderMatrixTable();
+    }
+
+    function toggleClimateHighlight() {
+      const on = document.getElementById('climate-toggle').checked;
+      document.getElementById('climate-panel').classList.toggle('hidden', !on);
+      renderMatrixTable();
+    }
+
+    function renderMatrixTable() {
+      const dataset = SLOTTING_MATRIX[activeMatrixClass];
+      const search = (document.getElementById('matrix-search').value || '').trim().toLowerCase();
+      const focusGrade = document.getElementById('matrix-grade-focus').value;
+      const climateOn = document.getElementById('climate-toggle').checked;
+
+      document.getElementById('matrix-table-title').textContent = dataset.title;
+
+      const grades = ['Strong', 'Good', 'Satisfactory', 'Weak'];
+      const colHeadStyle = {
+        Strong: 'text-emerald-900 bg-emerald-50/90',
+        Good: 'text-sky-900 bg-sky-50/90',
+        Satisfactory: 'text-amber-900 bg-amber-50/90',
+        Weak: 'text-rose-900 bg-rose-50/90'
+      };
+
+      let headHtml = `<tr><th class="py-3 px-4 font-bold w-48">Pillar & Sub-Factor</th>`;
+      grades.forEach(g => {
+        const isFocused = (focusGrade === g);
+        const ringCls = isFocused ? 'ring-2 ring-inset ring-slate-900 font-extrabold' : 'font-bold';
+        const dimCls = (focusGrade !== 'ALL' && !isFocused) ? 'opacity-40' : '';
+        headHtml += `<th class="py-3 px-3 ${colHeadStyle[g]} ${ringCls} ${dimCls}">${g}</th>`;
+      });
+      headHtml += `<th class="py-3 px-4 font-bold w-56 bg-slate-50">Credit File Example</th></tr>`;
+      document.getElementById('matrix-thead').innerHTML = headHtml;
+
+      const filtered = dataset.rows.filter(r => {
+        if (!search) return true;
+        const haystack = `${r.pillar} ${r.factor} ${r.Strong} ${r.Good} ${r.Satisfactory} ${r.Weak} ${r.example} ${r.climateNote || ''}`.toLowerCase();
+        return haystack.includes(search);
+      });
+
+      document.getElementById('matrix-row-count').textContent = `Showing ${filtered.length} of ${dataset.rows.length} sub-factors`;
+
+      if (filtered.length === 0) {
+        document.getElementById('matrix-tbody').innerHTML = `
+          <tr>
+            <td colspan="6" class="p-10 text-center space-y-3">
+              <div class="text-sm font-bold text-slate-700">No matching criteria found</div>
+              <p class="text-xs text-slate-500">Try another keyword or reset your search filter.</p>
+              <button type="button" onclick="resetMatrixFilters()" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition">
+                Reset Filters
+              </button>
+            </td>
+          </tr>`;
+        return;
+      }
+
+      let bodyHtml = '';
+      filtered.forEach(r => {
+        const rowCls = (climateOn && r.climate) ? 'climate-highlight' : 'hover:bg-slate-50';
+        const cTag = r.climate
+          ? `<span class="inline-block mt-1.5 px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold text-[10px] border border-emerald-300">FAQ1 Climate Factor</span>`
+          : '';
+        const cBox = (climateOn && r.climate && r.climateNote)
+          ? `<div class="mt-2 p-2 rounded-lg bg-emerald-950 text-emerald-100 text-[11px] leading-snug">${r.climateNote}</div>`
+          : '';
+
+        bodyHtml += `<tr class="${rowCls} transition-colors">
+          <td class="py-3.5 px-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-sky-700 block">${r.pillar}</span>
+            <span class="font-bold text-slate-900 text-xs block mt-0.5">${r.factor}</span>
+            ${cTag}
+            ${cBox}
+          </td>`;
+
+        grades.forEach(g => {
+          const isFocused = (focusGrade === g);
+          const cellFocus = isFocused ? 'bg-sky-50/50 font-medium text-slate-950' : 'text-slate-700';
+          const cellDim = (focusGrade !== 'ALL' && !isFocused) ? 'opacity-40' : '';
+          bodyHtml += `<td class="py-3.5 px-3 leading-relaxed ${cellFocus} ${cellDim}">${r[g]}</td>`;
+        });
+
+        bodyHtml += `<td class="py-3.5 px-4 bg-slate-50/70 text-slate-800 leading-relaxed border-l border-slate-100">
+            <strong class="text-slate-900">Example:</strong> ${r.example}
+          </td>
+        </tr>`;
+      });
+
+      document.getElementById('matrix-tbody').innerHTML = bodyHtml;
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. MODULE 4: 4 REAL-WORLD BANKING SCENARIO WALKTHROUGHS
+    // -----------------------------------------------------------------------
+    const SCENARIOS = [
+      {
+        badge: 'Walkthrough 1 • Project Finance (CRE33.13)',
+        title: '$250M Offshore Wind Farm SPV',
+        ead: 250,
+        provisions: 1.10,
+        summary: 'Compares a contracted turnkey offshore wind SPV against a restructuring hit by commissioning delays, grid curtailment, and unhedged merchant tail exposure.',
+        base: {
+          name: 'Base Case: Turnkey EPC + 18-Yr PPA (Strong, 70% RW)',
+          subclass: 'PF',
+          slot: 'Strong',
+          maturity: 14.0,
+          pref: false,
+          commentary: 'The SPV executes a fixed-price, date-certain turnkey EPC contract with substantial liquidated damages. An AA-rated utility signs an 18-year fixed-price PPA that exceeds the 14-year fully amortising debt tenor. Minimum DSCR sits at 1.45x under P90 wind assumptions. Analysts assign Strong (70% UL RW = $175.00M RWA; 5% EL RW = $1.00M EL).',
+          factors: [
+            { k: 'Financial Ratios & Stress', g: 'Strong', d: '1.45x min DSCR; survives P99 low-wind and storm outage stress.' },
+            { k: 'Construction & EPC', g: 'Strong', d: 'Wrapped turnkey EPC contract with 20% bank-backed LDs.' },
+            { k: 'Off-take Contract', g: 'Strong', d: '18-year take-or-pay PPA comfortably exceeds 14-year loan tenor.' },
+            { k: 'Security & Reserves', g: 'Strong', d: 'First perfected security plus cash-funded 9-month DSRA.' }
+          ]
+        },
+        stress: {
+          name: 'Stress Scenario: Delay + Curtailment + Merchant Tail (Satisfactory, 115% RW)',
+          subclass: 'PF',
+          slot: 'Satisfactory',
+          maturity: 14.0,
+          pref: false,
+          commentary: 'Subsea cable delays push completion past the milestone date, grid curtailment cuts dispatched output by 12%, and PPA renegotiation leaves a 4-year unhedged merchant tail with a 20% maturity bullet. DSCR compresses to 1.16x. Credit officers downgrade the SPV to Satisfactory (115% UL RW = $287.50M RWA; 35% EL RW = $7.00M EL).',
+          factors: [
+            { k: 'Financial Ratios & Stress', g: 'Satisfactory', d: 'DSCR compresses to 1.16x; vulnerable in a normal power downturn.' },
+            { k: 'Amortisation Schedule', g: 'Satisfactory', d: 'Rescheduled profile introduces a 20% limited bullet payment.' },
+            { k: 'Off-take & Grid Risk', g: 'Satisfactory', d: 'Grid curtailment and 4-year merchant power price exposure.' },
+            { k: 'Security Package', g: 'Good', d: 'Perfected security and cash sweep covenants remain enforceable.' }
+          ]
+        }
+      },
+      {
+        badge: 'Walkthrough 2 • IPRE vs. HVCRE Shift (CRE33.14 & CRE33.5)',
+        title: '$120M Commercial Office Tower',
+        ead: 120,
+        provisions: 0.60,
+        summary: 'Demonstrates the double capital penalty when a stabilised Strong IPRE asset (70% RW) is compared against a speculative unleased HVCRE construction deal downgraded to Satisfactory (140% RW).',
+        base: {
+          name: 'Base Case: Stabilised Pre-Leased IPRE (Strong, 70% RW)',
+          subclass: 'IPRE',
+          slot: 'Strong',
+          maturity: 7.0,
+          pref: false,
+          commentary: 'The $120.00M Grade-A CBD tower is 96% leased on staggered 10-year leases to investment-grade tenants at a 52% LTV and 1.65x DSCR. Under General SL IPRE rules, Strong carries a 70% UL RW ($84.00M RWA) and a 5% EL RW ($0.48M EL).',
+          factors: [
+            { k: 'Exposure Sub-Class', g: 'Strong', d: 'Qualifies as stabilised Income-Producing Real Estate (IPRE).' },
+            { k: 'Cash-Flow Predictability', g: 'Strong', d: 'Long-term investment-grade leases with scattered expiry dates.' },
+            { k: 'DSCR & Advance Rate', g: 'Strong', d: '1.65x DSCR and conservative 52% LTV.' },
+            { k: 'Lien & Rent Assignment', g: 'Strong', d: 'Perfected first mortgage plus current rent roll and lockbox.' }
+          ]
+        },
+        stress: {
+          name: 'What-If Case: Speculative Unleased HVCRE Build (Satisfactory, 140% RW)',
+          subclass: 'HVCRE',
+          slot: 'Satisfactory',
+          maturity: 4.5,
+          pref: false,
+          commentary: 'Now consider financing the $120.00M tower as a speculative ground-up build without pre-leases or permanent take-out financing. Supervisors classify the facility as HVCRE (CRE33.5), and construction cash-flow criteria cap the slot at Satisfactory. Both asset class and grade shift together, doubling RWA from $84.00M to $168.00M (140% UL RW) and raising EL to $3.36M (35% EL RW).',
+          factors: [
+            { k: 'Regulatory Reclassification', g: 'Satisfactory', d: 'Classified as HVCRE under CRE33.5 high-volatility rules.' },
+            { k: 'Construction Cash-Flow (c)', g: 'Satisfactory', d: 'Zero pre-leases signed and no take-out lender commitment.' },
+            { k: 'Market Competition', g: 'Satisfactory', d: 'Competing office towers entering the CBD pipeline.' },
+            { k: 'Sponsor Contribution', g: 'Satisfactory', d: 'Developer contributes land equity with modest cash reserves.' }
+          ]
+        }
+      },
+      {
+        badge: 'Walkthrough 3 • Object Finance (CRE33.15)',
+        title: '$85M Widebody Freighter Aircraft Lease',
+        ead: 85,
+        provisions: 0.75,
+        summary: 'Contrasts a liquid global freighter on a full-payout lease (Good, 90% RW) against a niche passenger-to-freighter conversion with a large balloon and weak remarketing (Weak, 250% RW).',
+        base: {
+          name: 'Base Case: Liquid Global Freighter + Full Payout (Good, 90% RW)',
+          subclass: 'OF',
+          slot: 'Good',
+          maturity: 8.5,
+          pref: false,
+          commentary: 'The $85.00M loan finances a standard widebody cargo jet leased to an established regional airline. The asset trades in a liquid global market, amortises smoothly with a modest balloon, and sits under a Cape Town first-priority mortgage. Analysts assign Good (90% UL RW = $76.50M RWA; 10% EL RW = $0.68M EL).',
+          factors: [
+            { k: 'Market Liquidity & Design', g: 'Good', d: 'Standard cargo configuration trading in a worldwide market.' },
+            { k: 'Financing Term vs Life', g: 'Good', d: 'Full-payout schedule with a modest, well-covered balloon.' },
+            { k: 'Operator Remarketing', g: 'Good', d: 'Satisfactory lessor track record and maintenance reserves.' },
+            { k: 'Security & Monitoring', g: 'Strong', d: 'Cape Town perfected mortgage plus satellite flight tracking.' }
+          ]
+        },
+        stress: {
+          name: 'Stress Scenario: Niche Conversion + Balloon + Weak Remarketing (Weak, 250% RW)',
+          subclass: 'OF',
+          slot: 'Weak',
+          maturity: 6.0,
+          pref: false,
+          commentary: 'An ageing niche-configuration freighter faces stricter fuel-emissions surcharges (FAQ1), carries a 60% maturity balloon, and relies on a small operator unable to remarket the jet off-lease. Appraised resale value drops below the $85.00M loan balance. The facility downgrades to Weak (250% UL RW = $212.50M RWA; 100% EL RW = $6.80M EL).',
+          factors: [
+            { k: 'Configuration & Resale (FAQ1)', g: 'Weak', d: 'Niche conversion near end of economic life; resale below debt.' },
+            { k: 'Balloon Repayment Risk', g: 'Weak', d: 'High 60% balloon creates severe maturity refinancing risk.' },
+            { k: 'Operator Remarketing', g: 'Weak', d: 'Short track record and inability to remarket specialised airframe.' },
+            { k: 'Stress Resilience', g: 'Weak', d: 'Charter rate volatility threatens default in normal conditions.' }
+          ]
+        }
+      },
+      {
+        badge: 'Walkthrough 4 • Commodities Finance (CRE33.16)',
+        title: '$60M Structured Pre-Export Copper Cathode Facility',
+        ead: 60,
+        provisions: 0.20,
+        summary: 'Shows how a short-tenor LME-hedged offshore structure captures 50% preferential RW and 0% EL, whereas an inland warehouse control rupture and basis risk trigger a jump to Satisfactory (115% RW).',
+        base: {
+          name: 'Base Case: LME Hedged + Offshore Escrow <2.5y (Strong Pref, 50% RW)',
+          subclass: 'CF',
+          slot: 'Strong',
+          maturity: 1.5,
+          pref: true,
+          commentary: 'A 1.5-year ($60.00M) copper cathode pre-export facility is 130% over-collateralised, fully hedged via LME futures, and repaid by a 1st-class buyer directly into a London escrow account. The bank holds endorsed warehouse warrants. Because remaining maturity is 1.5 years (< 2.5y), national discretion grants Strong Preferential weights: 50% UL RW ($30.00M RWA) and 0% EL RW ($0.00M EL).',
+          factors: [
+            { k: 'Over-Collateralisation', g: 'Strong', d: '130% LME cathode collateral value with daily margining.' },
+            { k: 'Country Risk Mitigation', g: 'Strong', d: 'Offshore collection escrow, strategic metal, 1st-class buyer.' },
+            { k: 'Liquidity & LME Hedging', g: 'Strong', d: 'LME futures lock in sale price; non-perishable metal.' },
+            { k: 'Perfected Asset Control', g: 'Strong', d: 'First perfected security via endorsed warehouse warrants.' }
+          ]
+        },
+        stress: {
+          name: 'Stress Scenario: Transit Control Rupture + Unhedged Basis (Satisfactory, 115% RW)',
+          subclass: 'CF',
+          slot: 'Satisfactory',
+          maturity: 1.5,
+          pref: false,
+          commentary: 'Rail bottlenecks strand shipments at an inland terminal where custody transfers create a temporary rupture in bank asset control (mitigated only by forwarder undertakings), while regional basis spreads go unhedged. The slot drops to Satisfactory, disqualifying preferential rates even at 1.5y maturity. RWA more than doubles to $69.00M (115% UL RW) and EL rises to $1.68M (35% EL RW).',
+          factors: [
+            { k: 'Asset Control Rupture', g: 'Satisfactory', d: 'Temporary control gap during inland rail-to-port transfer.' },
+            { k: 'Hedging & Basis Risk', g: 'Satisfactory', d: 'Regional cathode grade basis differential remains unhedged.' },
+            { k: 'Country Risk Exposure', g: 'Satisfactory', d: 'Emerging-market transit risk before offshore loading.' },
+            { k: 'Preferential Eligibility', g: 'Satisfactory', d: 'Satisfactory category is ineligible for CRE33.4 preferential RW.' }
+          ]
+        }
+      }
+    ];
+
+    function selectScenario(idx) {
+      activeScenarioIdx = idx;
+      activeScenarioCase = 'base';
+      document.querySelectorAll('.scen-btn').forEach(btn => {
+        if (parseInt(btn.dataset.scen, 10) === idx) {
+          btn.className = 'scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-sm transition';
+        } else {
+          btn.className = 'scen-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+        }
+      });
+      renderScenario();
+    }
+
+    function setScenarioCase(mode) {
+      activeScenarioCase = mode;
+      renderScenario();
+    }
+
+    function loadScenarioToCalc() {
+      const s = SCENARIOS[activeScenarioIdx];
+      const c = s[activeScenarioCase];
+      document.getElementById('calc-subclass').value = c.subclass;
+      document.getElementById('calc-ead-input').value = s.ead.toFixed(2);
+      document.getElementById('calc-ead-range').value = Math.min(500, s.ead);
+      document.getElementById('calc-prov-input').value = s.provisions.toFixed(2);
+      document.getElementById('calc-maturity').value = c.maturity.toFixed(1);
+      document.getElementById('calc-nat-disc').checked = c.pref;
+      document.getElementById('calc-strong-uw').checked = false;
+      document.getElementById('calc-ead-neg-warn').classList.add('hidden');
+      document.getElementById('calc-prov-neg-warn').classList.add('hidden');
+      setCalcSlot(c.slot);
+      switchMainTab('calculator');
+    }
+
+    function renderScenario() {
+      const s = SCENARIOS[activeScenarioIdx];
+      const curr = s[activeScenarioCase];
+      const mBase = computeCRE33(s.base.subclass, s.base.slot, s.ead, s.base.pref, s.provisions);
+      const mStress = computeCRE33(s.stress.subclass, s.stress.slot, s.ead, s.stress.pref, s.provisions);
+      const mCurr = (activeScenarioCase === 'base') ? mBase : mStress;
+
+      const pillStyles = {
+        Strong: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+        Good: 'bg-sky-100 text-sky-900 border-sky-300',
+        Satisfactory: 'bg-amber-100 text-amber-900 border-amber-300',
+        Weak: 'bg-rose-100 text-rose-900 border-rose-300'
+      };
+
+      const factorsHtml = curr.factors.map(f => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between gap-3">
+          <div>
+            <div class="font-bold text-xs text-slate-900">${f.k}</div>
+            <p class="text-xs text-slate-600 mt-0.5">${f.d}</p>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold border shrink-0 ${pillStyles[f.g]}">${f.g}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('scenario-left').innerHTML = `
+        <div class="quant-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-800 border border-sky-200">${s.badge}</span>
+            <span class="text-xs font-mono text-slate-600">EAD: <strong>${fmtM(s.ead)}</strong> • Maturity: <strong>${curr.maturity.toFixed(1)}y</strong></span>
+          </div>
+          <div>
+            <h3 class="text-xl font-extrabold text-slate-900">${s.title}</h3>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">${s.summary}</p>
+          </div>
+
+          <div class="p-1 rounded-xl bg-slate-100 border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-1">
+            <button type="button" onclick="setScenarioCase('base')" class="py-2 px-3 rounded-lg text-xs font-bold text-left transition ${activeScenarioCase === 'base' ? 'bg-slate-900 text-white shadow' : 'text-slate-600 hover:text-slate-900'}">
+              ${s.base.name}
+            </button>
+            <button type="button" onclick="setScenarioCase('stress')" class="py-2 px-3 rounded-lg text-xs font-bold text-left transition ${activeScenarioCase === 'stress' ? 'bg-rose-600 text-white shadow' : 'text-slate-600 hover:text-slate-900'}">
+              ${s.stress.name}
+            </button>
+          </div>
+
+          <div class="terminal-box rounded-xl p-4 text-slate-100 text-xs leading-relaxed">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-sky-400 block mb-1">Credit Officer Commentary</span>
+            ${curr.commentary}
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Factor Scorecard</h4>
+            ${factorsHtml}
+          </div>
+        </div>
+      `;
+
+      const dRWA = mStress.rwa - mBase.rwa;
+      const dCap = mStress.ulCap - mBase.ulCap;
+      const dEL = mStress.elAmt - mBase.elAmt;
+
+      document.getElementById('scenario-right-kpis').innerHTML = `
+        <div class="quant-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Selected Scenario Metrics</span>
+              <h4 class="text-sm font-extrabold text-slate-900">${curr.subclass} • ${curr.slot} ${curr.pref ? '(Preferential)' : '(Standard)'}</h4>
+            </div>
+            <span class="mono-num text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-900">UL ${(mCurr.ulRW * 100).toFixed(0)}%</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[11px] text-slate-500 block">Credit RWA</span>
+              <span class="text-lg font-extrabold text-slate-900 mono-num">${fmtM(mCurr.rwa)}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-sky-50/60 border border-sky-200">
+              <span class="text-[11px] text-sky-900 block">Min UL Capital (8%)</span>
+              <span class="text-lg font-extrabold text-sky-800 mono-num">${fmtM(mCurr.ulCap)}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
+              <span class="text-[11px] text-amber-900 block">Expected Loss (${(mCurr.elRW * 100).toFixed(0)}% RW)</span>
+              <span class="text-lg font-extrabold text-amber-800 mono-num">${fmtM(mCurr.elAmt)}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+              <span class="text-[11px] text-rose-900 block">Base → Stress ΔRWA</span>
+              <span class="text-lg font-extrabold text-rose-700 mono-num">+${fmtM(dRWA)}</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900 text-slate-200 text-xs flex flex-wrap justify-between gap-2">
+            <span>Downgrade Capital Impact:</span>
+            <span class="mono-num font-bold text-rose-300">+${fmtM(dCap)} UL Cap | +${fmtM(dEL)} EL</span>
+          </div>
+
+          <button type="button" onclick="loadScenarioToCalc()" class="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-sm">
+            Load Scenario Into RWA & EL Calculator →
+          </button>
+        </div>
+      `;
+
+      const ctx = document.getElementById('scenarioShiftChart');
+      if (ctx) {
+        if (scenarioChartInstance) scenarioChartInstance.destroy();
+        scenarioChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Credit RWA ($M)', 'Min UL Capital ($M)', 'Expected Loss ($M)'],
+            datasets: [
+              {
+                label: 'Base Case',
+                data: [Number(mBase.rwa.toFixed(2)), Number(mBase.ulCap.toFixed(2)), Number(mBase.elAmt.toFixed(2))],
+                backgroundColor: '#0284c7',
+                borderRadius: 5
+              },
+              {
+                label: 'Stress / What-If Case',
+                data: [Number(mStress.rwa.toFixed(2)), Number(mStress.ulCap.toFixed(2)), Number(mStress.elAmt.toFixed(2))],
+                backgroundColor: '#e11d48',
+                borderRadius: 5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 11, font: { size: 10 } } },
+              tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toFixed(2)}M` } }
+            },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'M', font: { size: 10 } } },
+              x: { ticks: { font: { size: 10, weight: '600' } } }
+            }
+          }
+        });
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. MODULE 5: DATA QUALITY & COMPLIANCE SIMULATOR (6 PILLARS + 8 FLAGS)
+    // -----------------------------------------------------------------------
+    const NUM_SLOT = { 1: 'Strong', 2: 'Good', 3: 'Satisfactory', 4: 'Weak' };
+
+    function resetSimulatorClean() {
+      ['p-fin', 'p-pol', 'p-asset', 'p-ops', 'p-offtake', 'p-sec'].forEach(id => {
+        document.getElementById(id).value = '1';
+      });
+      ['flag-lien', 'flag-stale', 'flag-stress', 'flag-climate', 'flag-tenor', 'flag-rent', 'flag-offtaker', 'flag-mat'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+      runComplianceSimulator();
+    }
+
+    function runComplianceSimulator() {
+      const subclass = document.getElementById('sim-subclass').value;
+      const eadParsed = parseSafeNonNegative(document.getElementById('sim-ead').value);
+      const ead = eadParsed.value;
+      const claimPref = (document.getElementById('sim-claim-pref').value === 'yes');
+
+      const pillarIds = ['p-fin', 'p-pol', 'p-asset', 'p-ops', 'p-offtake', 'p-sec'];
+      const pVals = pillarIds.map(id => parseInt(document.getElementById(id).value, 10));
+      const avg = pVals.reduce((a, b) => a + b, 0) / pVals.length;
+      const deskNum = Math.min(4, Math.max(1, Math.round(avg)));
+      const deskSlot = NUM_SLOT[deskNum];
+
+      const fLien = document.getElementById('flag-lien').checked;
+      const fStale = document.getElementById('flag-stale').checked;
+      const fStress = document.getElementById('flag-stress').checked;
+      const fClimate = document.getElementById('flag-climate').checked;
+      const fTenor = document.getElementById('flag-tenor').checked;
+      const fRent = document.getElementById('flag-rent').checked;
+      const fOfftaker = document.getElementById('flag-offtaker').checked;
+      const fMat = document.getElementById('flag-mat').checked;
+
+      let score = 100;
+      let auditNum = deskNum;
+      let auditPref = claimPref;
+      const checklist = [];
+
+      // Pillar drag check
+      if (Math.max(...pVals) === 4 && auditNum < 3) {
+        auditNum = 3;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Strengthen Weak Risk Pillar: At least one core pillar grades Weak, capping the supervisory slot at Satisfactory until mitigated.'
+        });
+      }
+
+      if (fLien) {
+        score -= 26;
+        auditNum = 4;
+        auditPref = false;
+        checklist.push({
+          sev: 'err',
+          msg: 'Perfect First-Ranking Security Interest: Register the first lien and obtain clean legal enforceability opinions to lift the mandatory Weak (250% RW) floor.'
+        });
+      }
+
+      if (fTenor) {
+        score -= 18;
+        auditNum = 4;
+        auditPref = false;
+        checklist.push({
+          sev: 'err',
+          msg: 'Align Loan Tenor & Cap Balloon: Shorten loan maturity below asset useful life and add principal amortisation to exit the Weak override.'
+        });
+      }
+
+      if (fRent) {
+        score -= 16;
+        auditNum = Math.max(auditNum, 4);
+        auditPref = false;
+        checklist.push({
+          sev: 'err',
+          msg: 'Execute Rent Assignment & Update Rent Roll: Obtain perfected lease assignments and current tenant schedules (CRE33.14 Weak criterion).'
+        });
+      }
+
+      if (fStale) {
+        score -= 12;
+        auditNum = Math.min(4, auditNum + 1);
+        auditPref = false;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Refresh Appraisal & Financial Model: Commission an independent valuation and updated cash-flow model (<12 months old) to reverse a 1-notch downgrade.'
+        });
+      }
+
+      if (fStress) {
+        score -= 12;
+        auditNum = Math.min(4, auditNum + 1);
+        auditPref = false;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Run Downside Stress Scenarios: Document interest-rate and sectoral downturn DSCR stress tests to restore slotting eligibility.'
+        });
+      }
+
+      if (fClimate) {
+        score -= 12;
+        auditNum = Math.min(4, auditNum + 1);
+        auditPref = false;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Mitigate Physical Climate Hazard (FAQ1): Verify physical weather adaptation defences or bind catastrophe hazard insurance.'
+        });
+      }
+
+      if (fOfftaker) {
+        score -= 10;
+        auditNum = Math.min(4, auditNum + 1);
+        auditPref = false;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Collect Audited Counterparty Statements: Verify audited financials for the off-taker, primary tenant, or commodity buyer.'
+        });
+      }
+
+      if (claimPref && fMat) {
+        score -= 8;
+        auditPref = false;
+        checklist.push({
+          sev: 'warn',
+          msg: 'Remove Unilateral Extension Option: Confirm remaining maturity is strictly below 2.5 years to restore preferential risk weights (CRE33.4 / 33.7).'
+        });
+      } else if (claimPref && auditNum > 2) {
+        auditPref = false;
+      }
+
+      score = Math.max(0, score);
+      const auditSlot = NUM_SLOT[auditNum];
+
+      const mDesk = computeCRE33(subclass, deskSlot, ead, claimPref, 0);
+      const mAudit = computeCRE33(subclass, auditSlot, ead, auditPref, 0);
+
+      const rwaAddOn = Math.max(0, mAudit.rwa - mDesk.rwa);
+      const capAddOn = Math.max(0, mAudit.ulCap - mDesk.ulCap);
+      const elAddOn = Math.max(0, mAudit.elAmt - mDesk.elAmt);
+
+      if (checklist.length === 0) {
+        checklist.push({
+          sev: 'ok',
+          msg: 'Credit File Fully Compliant: Security opinions, fresh appraisals, stress tests, rent rolls, and FAQ1 climate checks pass supervisory review with $0.00M RWA add-on.'
+        });
+      }
+
+      // Update Circular Gauge & Score
+      document.getElementById('sim-dq-score').textContent = `${score}%`;
+      const circumference = 163.36;
+      const offset = circumference - (score / 100) * circumference;
+      const ring = document.getElementById('sim-gauge-ring');
+      ring.style.strokeDashoffset = offset.toFixed(2);
+
+      const badge = document.getElementById('sim-status-badge');
+      const caption = document.getElementById('sim-dq-caption');
+      if (score >= 90 && rwaAddOn === 0) {
+        ring.setAttribute('stroke', '#34d399');
+        badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+        badge.textContent = 'Supervisor Approved';
+        caption.textContent = 'Governance controls pass audit. Analyst proposed slot is approved without capital add-on.';
+      } else if (score >= 65 && auditNum <= 3) {
+        ring.setAttribute('stroke', '#fbbf24');
+        badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30';
+        badge.textContent = 'Notch Downgrade';
+        caption.textContent = 'Documentation or stress-test gaps trigger a supervisory notch downgrade.';
+      } else {
+        ring.setAttribute('stroke', '#f43f5e');
+        badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-400/30';
+        badge.textContent = 'Weak Floor Override';
+        caption.textContent = 'Critical security, tenor, or rent-control defects force a mandatory supervisory override.';
+      }
+
+      document.getElementById('sim-desk-slot').textContent = `${deskSlot} (${mDesk.usePref ? 'Pref' : 'Std'})`;
+      document.getElementById('sim-desk-rw').textContent = `UL: ${(mDesk.ulRW * 100).toFixed(0)}% | EL: ${(mDesk.elRW * 100).toFixed(0)}%`;
+
+      document.getElementById('sim-audit-slot').textContent = `${auditSlot} (${mAudit.usePref ? 'Pref' : 'Std'})`;
+      document.getElementById('sim-audit-rw').textContent = `UL: ${(mAudit.ulRW * 100).toFixed(0)}% | EL: ${(mAudit.elRW * 100).toFixed(0)}%`;
+
+      document.getElementById('sim-rwa-penalty').textContent = '+' + fmtM(rwaAddOn);
+      document.getElementById('sim-cap-penalty').textContent = '+' + fmtM(capAddOn);
+      document.getElementById('sim-el-penalty').textContent = '+' + fmtM(elAddOn);
+
+      const sevCls = {
+        err: 'bg-rose-50 border-rose-200 text-rose-950',
+        warn: 'bg-amber-50 border-amber-200 text-amber-950',
+        ok: 'bg-emerald-50 border-emerald-200 text-emerald-950'
+      };
+      document.getElementById('sim-remediation-list').innerHTML = checklist.map(item => `
+        <li class="p-3 rounded-xl border leading-relaxed ${sevCls[item.sev]}">${item.msg}</li>
+      `).join('');
+
+      const ctx = document.getElementById('simulatorChart');
+      if (ctx) {
+        if (simChartInstance) simChartInstance.destroy();
+        simChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Credit RWA ($M)', 'Min UL Capital ($M)', 'Expected Loss ($M)'],
+            datasets: [
+              {
+                label: 'Analyst Proposed',
+                data: [Number(mDesk.rwa.toFixed(2)), Number(mDesk.ulCap.toFixed(2)), Number(mDesk.elAmt.toFixed(2))],
+                backgroundColor: '#0284c7',
+                borderRadius: 5
+              },
+              {
+                label: 'Supervisory Approved',
+                data: [Number(mAudit.rwa.toFixed(2)), Number(mAudit.ulCap.toFixed(2)), Number(mAudit.elAmt.toFixed(2))],
+                backgroundColor: '#e11d48',
+                borderRadius: 5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+              tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.parsed.y.toFixed(2)}M` } }
+            },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'M', font: { size: 10 } } },
+              x: { ticks: { font: { size: 10, weight: '600' } } }
+            }
+          }
+        });
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. INITIALIZATION & LISTENERS
+    // -----------------------------------------------------------------------
+    window.addEventListener('load', function () {
+      const dock = document.getElementById('primary-nav-dock');
+      if (dock) {
+        dock.addEventListener('scroll', updateNavScrollCues, { passive: true });
+        if (typeof ResizeObserver !== 'undefined') {
+          const ro = new ResizeObserver(updateNavScrollCues);
+          ro.observe(dock);
+        }
+        window.addEventListener('resize', updateNavScrollCues);
+        updateNavScrollCues();
+      }
+
+      selectOverviewSubClass('PF');
+      renderOverviewChart();
+      updateCalculator();
+      renderMatrixTable();
+      renderScenario();
+      runComplianceSimulator();
+    });
+  </script>
+</body>
+</html>
